@@ -2,7 +2,7 @@
     ###       Statistical Computing with R              ###          
     ###       Maria L. Rizzo                            ###
     ###                                                 ###
-    ###       R code for Chapter                        ###
+    ###       R code for Chapter 3                      ###
     #######################################################
 
 ### Example 3.1
@@ -17,7 +17,7 @@
     sample(letters)
     
     #sample from a multinomial distribution
-    x <- sample(1:3, size = 100, replace = TRUE, prob = c(.2, .3, .5))
+    x <- sample(1:3, size = 10000, replace = TRUE, prob = c(.2, .3, .5))
     table(x)
 
 
@@ -35,7 +35,7 @@
 
 ### Example 3.4 (Two point distribution)
 
-    n <- 1000
+    n <- 100000
     p <- 0.4
     u <- runif(n)
     x <- as.integer(u > 0.6)   #(u > 0.6) is a logical vector
@@ -120,31 +120,6 @@
     abline(0, 1)
 
 
-### Example 3.9 (Logarithmic distribution, version 2)
-
-    n <- 1000
-    theta <- 0.5
-    u <- runif(n)  #generate logarithmic sample
-    v <- runif(n)
-    x <- floor(1 + log(v) / log(1 - (1 - theta)^u))
-    k <- 1:max(x)  #calc. logarithmic probs.
-    p <- -1 / log(1 - theta) * theta^k / k
-    se <- sqrt(p*(1-p)/n)
-    p.hat <- tabulate(x)/n
-
-    print(round(rbind(p.hat, p, se), 3))
-
-    # The following function is a simple replacement for
-    # rlogarithmic in Example 3.6
-
-    rlogarithmic <- function(n, theta) {
-        stopifnot(all(theta > 0 & theta < 1))
-        th <- rep(theta, length=n)
-        u <- runif(n)
-        v <- runif(n)
-        x <- floor(1 + log(v) / log(1 - (1 - th)^u))
-        return(x)
-    }
 
 
 ### Example 3.10 (Chisquare)
