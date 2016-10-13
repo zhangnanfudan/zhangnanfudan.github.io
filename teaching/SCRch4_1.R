@@ -56,7 +56,7 @@ persp(x, y, z, theta = 45, phi = 30, expand = 0.6,
 # More attractive
 persp(x, y, z, theta = 45, phi = 30, expand = 0.6,
       ltheta = 120, shade = 0.75, ticktype = "simple",
-      xlab = "X", ylab = "Y", zlab = "", box=T, 
+      xlab = "X", ylab = "Y", zlab = "", box=F, 
       col='lightblue')
 
 ### Example 4.3 (Add elements to perspective plot)
