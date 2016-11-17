@@ -283,15 +283,9 @@ c(mean(e1^2), mean(e2^2), mean(e3^2), mean(e4^2))
 #selected model, fitted in Example 7.17
 L2
 
-par(mfrow = c(2, 2))    #layout for graphs
+par(mfrow = c(1, 2))    #layout for graphs
 plot(L2$fit, L2$res)    #residuals vs fitted values
 abline(0, 0)            #reference line
 qqnorm(L2$res)          #normal probability plot
 qqline(L2$res)          #reference line
 par(mfrow = c(1, 1))    #restore display
-
-
-
-
-
-
