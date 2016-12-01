@@ -6,10 +6,10 @@
 
     m <- 5000 #length of chain
     xt <- numeric(m)
-    a <- 1             #parameter of Beta(a,b) proposal dist.
-    b <- 1             #parameter of Beta(a,b) proposal dist.
-    # a <- 5             #parameter of Beta(a,b) proposal dist.
-    # b <- 2             #parameter of Beta(a,b) proposal dist.
+    # a <- 1             #parameter of Beta(a,b) proposal dist.
+    # b <- 1             #parameter of Beta(a,b) proposal dist.
+    a <- 5             #parameter of Beta(a,b) proposal dist.
+    b <- 2             #parameter of Beta(a,b) proposal dist.
     p <- .2            #mixing parameter
     n <- 30            #sample size
     mu <- c(0, 5)      #parameters of the normal densities
