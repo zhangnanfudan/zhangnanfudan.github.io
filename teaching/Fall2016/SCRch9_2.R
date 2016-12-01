@@ -78,9 +78,18 @@
     colMeans(x)
     cov(x)
     cor(x)
-
-    plot(x, main="", cex=.5, xlab=bquote(X[1]),
-         ylab=bquote(X[2]), ylim=range(x[,2]))
+    
+    library(MASS)
+    S = matrix(c(sigma1^2, rho*sigma1*sigma2,
+                 rho*sigma1*sigma2, sigma2^2),2)
+    x_MASS = mvrnorm(n=dim(x)[1],mu=c(mu1, mu2), Sigma=S)
+    
+    par(mfrow=c(1,2))
+    plot(x, cex=.5, xlab=bquote(X[1]),
+         ylab=bquote(X[2]), ylim=range(x[,2]), main='MCMC')
+    plot(x_MASS, cex=.5, xlab=bquote(X[1]),
+         ylab=bquote(X[2]), ylim=range(x[,2]), main='MASS')
+    
          
 ### Example 9.8 (Gelman-Rubin method of monitoring convergence)
 
