@@ -4,58 +4,39 @@ source('grid.r')  # I changed the defaults so that
 
 
 ################
-pdf(file="jj.pdf", width=7.5,height=3.25)   
+# Johnson & Johnson Quarterly Earnings
 par(mar=c(3,3,1,1), mgp=c(1.6,.6,0))
 plot(jj, ylab="Quarterly Earnings per Share",   type='n')
-grid(lty=1); lines(jj, type="o")
-dev.off()
+grid(lty=1)
+lines(jj, type="o")
 
-############ this is in the EZ version only #########
-pdf(file="4bros.pdf", width=6.5, height=2.75)
-par(mfrow=1:2, mar=c(2.5,2.5,.5,.5)+.1, mgp=c(1.5,.6,0))
-t=1:(10*2)
-x = 100*1.1^t
-y = 150*1.1^t
-z = 200*1.1^t
-w = 75*1.1^t 
-culer = c(1,2,'darkgreen',4)
-u=t(cbind(x,y,z,w))
-x=ts(c(u), freq=4)
-plot(x, xlab='quarter', ylab='value', col=gray(.6))
-points(x,  pch=c('1','2','3','4'), col=culer, cex=.8)
-plot(log(x), xlab='quarter', ylab='log(value)', col=gray(.6))
-points(log(x),  pch=c('1','2','3','4'), col=culer, cex=.8)
 dev.off()
 
 
 ###########
-pdf(file="globtemp.pdf",  width=7.5,height=3.25)  
+# Global Warming
 par(mar=c(3,3,1,1), mgp=c(1.6,.6,0))
 plot(globtemp, ylab="Global Temperature Deviations",    type='n')   
 grid(lty=1); lines(globtemp, type='o')
 dev.off()
 
 ###########
-pdf(file="speech.pdf", width=7.5,height=3.25)   
+# New York Stock Exchange
 par(mar=c(3,3,1,1), mgp=c(1.6,.6,0))
-plot(speech,   type='n', ylim=c(0,4100))
-grid(lty=1);   lines(speech); 
+plot(nyse,   type='n', ylab='NYSE Returns')
+grid(lty=1);   lines(nyse); 
 dev.off()
 
 ###########
-# library(TTR)                                          
-# djia = getYahooData("^DJI",start=20060420,end=20160420,freq="daily") 
-library(xts)
-djiar = diff(log(djia$Close))[-1]         
-pdf(file="djiar.pdf", width=7.5,height=3.25)   
+# Speech
 par(mar=c(3,3,1,1), mgp=c(1.6,.6,0))
-plot(djiar, ylab="DJIA Returns", main='', type='n')
-lines(djiar)
+plot(speech,   type='n', ylab='speech')
+grid(lty=1);   lines(speech); 
 dev.off()
 
 
 #########
-pdf(file="fish.pdf",width=7.5,height=6)  
+# SOI and Fish
 par(mfrow = c(2,1), mar=c(2,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
 plot(soi, ylab="", xlab="", main="Southern Oscillation Index",   type='n')
 grid(lty=1); lines(soi)
@@ -65,7 +46,7 @@ dev.off()
 
 
 #########
-pdf(file="fmri1.pdf",width=7.5,height=6)  
+# fMRI
 par(mfrow = c(2,1), mar=c(2,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
 ts.plot(fmri1[,2:5], ylab="BOLD", xlab="", main="Cortex", type='n')
 grid(lty=1); par(new=TRUE)
@@ -79,7 +60,7 @@ dev.off()
 
 
 #####################
-pdf(file="eqexp.pdf",width=7.5,height=6)   
+# Earthquakes and Explosions
 par(mfrow = c(2,1), mar=c(2,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
 plot(EQ5, main="Earthquake", xlab="", type='n')
 grid(lty=1); lines(EQ5)
@@ -90,7 +71,6 @@ dev.off()
 
 
 ####################
-pdf(file="wn_ma.pdf",width=7.5,height=6)   
 par(mfrow = c(2,1), mar=c(2,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
 set.seed(1)
 w = rnorm(500,0,1)                    # 500 N(0,1) variates
@@ -103,7 +83,7 @@ dev.off()
 
 
 ####################
-pdf(file="ar2.pdf",width=7.5,height=3.25)   
+# Autoregression
 par(mar=c(2,2,1,0)+.5, mgp=c(1.6,.6,0))
 w = rnorm(550,0,1)  # 50 extra to avoid startup problems
 x = filter(w, filter=c(1,-.9), method="recursive")[-(1:50)]
@@ -113,7 +93,7 @@ dev.off()
 
 
 #################
-pdf(file="rw.pdf",width=7.5,height=3.25)   
+# RW with Drift
 par(mar=c(2,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
 set.seed(154)                # so you can reproduce the results
 w = rnorm(200,0,1);  x = cumsum(w)   # two commands in one line
@@ -126,7 +106,7 @@ dev.off()
 
 
 ####################
-pdf(file="cos.pdf",width=7.5,height=6)   
+# Signal in Noise
 par(mfrow = c(3,1), mar=c(2,2.5,1,0)+.5, mgp=c(1.6,.6,0))
 cs = 2*cos(2*pi*1:500/50 + .6*pi);  w = rnorm(500,0,1)
 par(mfrow=c(3,1), mar=c(3,2,2,1), cex.main=1.05)
@@ -138,7 +118,10 @@ plot.ts(cs+5*w, ylab='', main=expression(2*cos(2*pi*t/50+.6*pi) + N(0,5^2)), typ
  grid(lty=1, col=gray(.9)); lines(cs+5*w) 
 dev.off()
 
-
+###################
+###################
+###################
+###################
 ###################
 pdf(file="ma3.pdf",width=6,height=2.5) 
 ACF = c(0,0,0,1/3,2/3,1,2/3,1/3,0,0,0)
