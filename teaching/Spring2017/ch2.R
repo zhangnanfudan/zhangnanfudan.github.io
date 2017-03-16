@@ -30,7 +30,7 @@ dev.off()
 pairs(cbind(Mortality=cmort, Temperature=tempr, Particulates=part))
 dev.off()
 
-
+temp=tempr
 temp2 = temp^2
 trend = time(cmort) # time
 num=length(trend)
