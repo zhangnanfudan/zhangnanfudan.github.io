@@ -2,7 +2,7 @@ library('astsa')
 source('grid.r')
 
 ##########
-pdf(file="ar1sim.pdf",width=7.5,height=4.5)  # works with scale=.6
+# AR(1) with phi=+-0.9
 set.seed(101010)
 par(mfrow = c(2,1), mar=c(1.5,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
 x<-arima.sim(list(order=c(1,0,0), ar=.9), n=100)
@@ -18,7 +18,7 @@ dev.off()
 
 
 #####################
-pdf(file="ma1sim.pdf",width=7.5,height=4.5)  # works with scale=.6
+# MA(1) with theta=+-0.9
 par(mfrow = c(2,1), mar=c(1.5,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
 set.seed(101010)
 plot(x<-arima.sim(list(order=c(0,0,1), ma=.9), n=100), ylab="x", xlab="", main=(expression(MA(1)~~~theta==+.9)), type='n')
@@ -30,7 +30,11 @@ lines(x)
 mtext('Time', side=1, line=1)
 dev.off()
 
-
+#####################
+#####################
+#####################
+#####################
+#####################
 ################
 pdf(file="ar2causalregion.pdf",height=3.5, width=6.5) 
 par(mar=c(3,3,2,1), mgp=c(1.6,.6,0))
