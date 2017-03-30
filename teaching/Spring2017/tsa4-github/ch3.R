@@ -21,10 +21,12 @@ dev.off()
 # MA(1) with theta=+-0.9
 par(mfrow = c(2,1), mar=c(1.5,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
 set.seed(101010)
-plot(x<-arima.sim(list(order=c(0,0,1), ma=.9), n=100), ylab="x", xlab="", main=(expression(MA(1)~~~theta==+.9)), type='n')
+plot(x<-arima.sim(list(order=c(0,0,1), ma=.9), n=100), 
+     ylab="x", xlab="", main=(expression(MA(1)~~~theta==+.9)), type='n')
 grid(lty=1)
 lines(x)
-plot(x<-arima.sim(list(order=c(0,0,1), ma=-.9), n=100), ylab="x", xlab='', main=(expression(MA(1)~~~theta==-.9)), type='n')
+plot(x<-arima.sim(list(order=c(0,0,1), ma=-.9), n=100), 
+     ylab="x", xlab='', main=(expression(MA(1)~~~theta==-.9)), type='n')
 grid(lty=1)
 lines(x)
 mtext('Time', side=1, line=1)
@@ -331,7 +333,8 @@ dat = read.table("uspop.dat")
 y = dat[,2]
 x = dat[,1]
 b = dat[,3]
-g = function(x) (b[1]+b[2]*(x-1955)+b[3]*(x-1955)^2+b[4]*(x-1955)^3+b[5]*(x-1955)^4+b[6]*(x-1955)^5+b[7]*(x-1955)^6+b[8]*(x-1955)^7+b[9]*(x-1955)^8)/10^8
+g = function(x) (
+  b[1]+b[2]*(x-1955)+b[3]*(x-1955)^2+b[4]*(x-1955)^3+b[5]*(x-1955)^4+b[6]*(x-1955)^5+b[7]*(x-1955)^6+b[8]*(x-1955)^7+b[9]*(x-1955)^8)/10^8
 curve(g, 1910,2002, ylab="Population", xlab="Year", main="U.S. Population by Official Census", panel.first=grid(ny=NULL,lty=1), cex.main=1, font.main=1)
 abline(v=c(1910,1930,1950,1970,1990), lty=1, col='lightgray')
 points(x, y/10^8, pch=16)
