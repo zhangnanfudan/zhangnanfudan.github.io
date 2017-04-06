@@ -35,43 +35,10 @@ dev.off()
 #####################
 #####################
 #####################
-#####################
-#####################
-################
-pdf(file="ar2causalregion.pdf",height=3.5, width=6.5) 
-par(mar=c(3,3,2,1), mgp=c(1.6,.6,0))
-phi1p=seq(0, 2, by=0.1)
-phi1m=seq(-2,0, by=.1)
-phi1=seq(-2, 2, by=0.1)
-phi2=seq(-1, 1, by=0.1)
-name1=expression(phi[1])
-name2=expression(phi[2])
-plot(phi1p, (1-phi1p), typ="l", ylim=c(-1,1), xlim=c(-2,2), ylab=name2, xlab=name1)
-lines(phi1m, (1+phi1m), typ="l", ylim=c(-1,1), xlim=c(-2,2)) 
-abline(h=0, v=0, lty=2, col='#cccccc')
-lines(phi1, -(phi1^2 /4), ylim=c(-1,1))
-lines( x=c(-2,2), y=c(-1,-1), typ="l", ylim=c(-1,1))
-text(0,.35,'real roots')
-text(0,-.5, 'complex roots')
-mtext('Causal Region of an AR(2)', side=3, line=.5)
-dev.off()
-
-
-####################
-set.seed(8675309)
-pdf(file="ar2sim.pdf",width=7.5,height=3.25) 
-par(mar=c(2,2,1,0)+.5, mgp=c(1.6,.6,0))
-ar2 = arima.sim(list(order=c(2,0,0), ar=c(1.5,-.75)), n = 144)
-plot(ar2, axes=FALSE, xlab="Time", type='n') 
-axis(2);  axis(1, at=seq(0,144,by=12));  box()
-abline(v=seq(0,144,by=12), lty=2)
-abline(h=c(-5,0,5), lty=1, col=gray(.9))
-lines(ar2)
-dev.off()
 
 
 ################
-pdf(file="ar2acf.pdf",width=7.25,height=3.25) 
+# ACF and PACF of AR(2)
 ACF = ARMAacf(ar=c(1.5,-.75), ma=0, 24)[-1]
 PACF = ARMAacf(ar=c(1.5,-.75), ma=0, 24, pacf=TRUE) 
 par(mfrow=c(1,2), mar=c(2.5,2.5,.5,0)+.5, mgp=c(1.6,.6,0))
@@ -81,6 +48,7 @@ dev.off()
 
 
 #######################
+# ACF and PACF of Recruitment data
 u = acf2(rec, 48); dev.off(); ACF=u[,1]; PACF=u[,2]
 LAG = 1:48/frequency(rec)
 num = length(rec)
@@ -92,7 +60,6 @@ U = 2/sqrt(num)
 L = -U
 minu = min(minA, minP, L) - 0.01
 maxu = min(max(maxA + 0.1, maxP + 0.1), 1)
-pdf(file="recacf.pdf",width=7,height=4) 
 par(mfrow=c(2,1), mar=c(2,2,0,0)+.5, mgp=c(1.5,.6,0))
 plot(LAG, ACF, type="h", xlab="LAG", ylim = c(minu, maxu), panel.first=grid(lty=1)); abline(h=0)
 abline(h = c(L, U), col=4, lty=2)  
