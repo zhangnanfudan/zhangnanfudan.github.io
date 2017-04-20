@@ -67,9 +67,12 @@ plot(LAG, PACF, type="h", xlab="LAG",  ylim = c(minu, maxu) , panel.first=grid(l
 abline(h = c(L, U), col=4, lty=2)  
 dev.off()
 
+#####################
+#####################
+#####################
 
 ############
-pdf(file="recolsfore.pdf",width=7.5,height=3.25)
+# Recruitment series AR(2) forecasting
 par(mar=c(2.5,2.5,0,0)+.5, mgp=c(1.6,.6,0))
 regr = ar.ols(rec, order=2, demean=FALSE, intercept=TRUE)
 fore = predict(regr, n.ahead=24)
