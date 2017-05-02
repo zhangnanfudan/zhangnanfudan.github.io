@@ -88,54 +88,17 @@ lines(fore$pred, type="p", col=2)
 dev.off()
 
 
-
-############
-pdf(file="backcast.pdf", width=7.5, height=3.25)
-set.seed(90210)
-x = arima.sim(list(order = c(1,0,1), ar =.9, ma=.5), n = 100)               
-xr = rev(x)                                   # xr is the reversed data
-pxr = predict(arima(xr, order=c(1,0,1)), 10)  # predict the reversed data
-pxrp = rev(pxr$pred)              # reorder the predictors (for plotting)
-pxrse = rev(pxr$se)               # reorder the SEs
-nx = ts(c(pxrp, x), start=-9)     # attach the backcasts to the data
-#
-par(mar=c(3,3,1.5,1), mgp=c(1.6,.6,0), cex.main=1.1)
-plot(nx, ylab=expression(X[~t]), main='Backcasting', type='n')
-grid(lty=1)
-lines(nx)
- U=  nx[1:10] + pxrse
- L = nx[1:10] - pxrse	
- xx = c(-9:0, 0:-9)
- yy = c(L, rev(U))
- polygon(xx, yy, border = 8, col = gray(0.6, alpha = 0.2))
- lines(-9:0, nx[1:10], col=2, type='o') 
-dev.off()
+#####################
+#####################
+#####################
 
 
 
-#######################
-u = acf2(diff(log(varve)), 36); dev.off(); ACF=u[,1]; PACF=u[,2]
-num = length(varve[-1])
-LAG = 1:36/frequency(varve)
-minA = min(ACF)
-maxA = max(ACF)
-minP = min(PACF)
-maxP = max(PACF)
-U = 2/sqrt(num)
-L = -U
-minu = min(minA, minP, L) - 0.01
-maxu = min(max(maxA + 0.1, maxP + 0.1), 1)
-pdf(file="varveacf.pdf",width=7,height=4) 
-par(mfrow=c(2,1), mar=c(2,2,0,0)+.5, mgp=c(1.5,.6,0))
-plot(LAG, ACF, type="h", xlab="LAG", ylim = c(minu, maxu), panel.first=grid(lty=1)); abline(h=0)
-abline(h = c(L, U), col=4, lty=2)  
-plot(LAG, PACF, type="h", xlab="LAG",  ylim = c(minu, maxu) , panel.first=grid(lty=1)); abline(h=0)
-abline(h = c(L, U), col=4, lty=2)  
-dev.off()
+
 
 
 ###############
-pdf(file="gaussnewton.pdf",width=7,height=3.75) 
+# Gauss-Newton optimatization case
 x=diff(log(varve))
 r=acf(x, lag=1, plot=FALSE)$acf[-1]
 rstart = (1-sqrt(1-4*(r^2)))/(2*r)    #example 3.29 (e2.27)
