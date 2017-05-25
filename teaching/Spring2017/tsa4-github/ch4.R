@@ -2,7 +2,7 @@ library('astsa')
 source('grid.r')
 
 ##############
-pdf(file="cosines.pdf",width=7.25,height=4.25) 
+# A Periodic Series
 x1 = 2*cos(2*pi*1:100*6/100) + 3*sin(2*pi*1:100*6/100)
 x2 = 4*cos(2*pi*1:100*10/100) + 5*sin(2*pi*1:100*10/100)
 x3 = 6*cos(2*pi*1:100*40/100) + 7*sin(2*pi*1:100*40/100)
@@ -15,7 +15,7 @@ plot.ts(x,  ylim=c(-16,16), main="sum",  panel.first=grid(lty=1), font.main=1)
 dev.off()
 
 ##############
-pdf(file="period1.pdf",width=7.25,height=3.25) 
+# Periodogram
 par(mar=c(2,2.5,1,0)+.5, mgp=c(1.6,.6,0))
 P = Mod(2*fft(x)/100)^2;  Fr = 0:99/100
 plot(Fr, P, type="o", xlab="frequency", ylab="scaled periodogram", panel.first=grid(lty=1), ylim=c(0,90) )

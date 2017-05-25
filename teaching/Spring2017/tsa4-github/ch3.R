@@ -91,99 +91,8 @@ dev.off()
 #####################
 #####################
 #####################
-
-
-
-
-
-
-###############
-# Gauss-Newton optimatization case
-x=diff(log(varve))
-r=acf(x, lag=1, plot=FALSE)$acf[-1]
-rstart = (1-sqrt(1-4*(r^2)))/(2*r)    #example 3.29 (e2.27)
-c(0) -> w 
-c() -> Sc 
-num = length(x)
-th = seq(-.3,-.94,-.01)
-for (p in 1:length(th)){
-    for (i in 2:num){w[i]=x[i]-th[p]*w[i-1]}
-	Sc[p] = sum(w^2)
-	}		
-par(mar=c(2,2.5,0,0)+.5, mgp=c(1.6,.6,0))	
-plot(th, Sc, type="l",ylab=expression(S[c](theta)), xlab=expression(theta),lwd=2, panel.first=grid(NA, NULL,lty=1)) 
-# estimation
-c(0) -> w -> z
-c() -> Sc -> Sz -> Szw
-para = c()
-niter = 15
-para[1]=rstart
-  for (p in 1:niter){
-    for (i in 2:num){w[i]=x[i]-para[p]*w[i-1]
-                   z[i]=w[i-1]-para[p]*z[i-1]
-                   }
-  Sc[p] = sum(w^2)				   
-  Sz[p]=sum(z^2)
-  Szw[p]=sum(z*w)
-  para[p+1] = para[p] + Szw[p]/Sz[p]
-  }  
-#round(cbind(iteration=0:(niter-1), thetahat=para[1:niter] , Sc , Sz ), 3)
-abline(v=para[1:12], lty=2)
-points(para[1:12], Sc[1:12], pch=16)
-dev.off()
-###########
-
-
-#############
-pdf(file="ar1boot.pdf",width=7.5,height=3.5) 
-par(mar=c(3,3,1,1), mgp=c(1.6,.6,0))
-set.seed(101010)
-e = rexp(150, rate=.5); u = runif(150,-1,1); de = e*sign(u)
-dex = 50 + arima.sim(n=100,list(ar=.95), innov=de, n.start=50)
-plot.ts(dex, type='n', ylab=expression(X[~t]))
-grid(lty=1, col=gray(.9))
-lines(dex, type='o')
-dev.off()
-##
-##
-pdf(file="newboot.pdf",width=7.25,height=3.75) 
-# simulate 'true' distn
-set.seed(111)
-phi.yw = rep(NA, 1000)
-for (i in 1:1000){
-  e = rexp(150, rate=.5); u = runif(150,-1,1); de = e*sign(u)
-  x = 50 + arima.sim(n=100,list(ar=.95), innov=de, n.start=50)
-  phi.yw[i] = ar.yw(x, order=1)$ar }
-# fit to dex (generated above)
-fit = ar.yw(dex, order=1)
-# bootstrap
-set.seed(666)
-m = fit$x.mean
-phi = fit$ar  # estimate of phi
-nboot = 500   # number of bootstrap replicates
-resids = fit$resid[-1]  # the first resid is NA
-x.star = dex    # initialize x*
-phi.star.yw = rep(NA, nboot)
-for (i in 1:nboot) {
-  resid.star = sample(resids, replace=TRUE)
-  for (t in 1:99){ x.star[t+1] = m + phi*(x.star[t]-m) + resid.star[t] }
-  phi.star.yw[i] = ar.yw(x.star, order=1)$ar } 
-# plot everything
-culer = rgb(.5,.7,1,.5)
-par(mar=c(3,3,1,1), mgp=c(1.6,.6,0))
-hist(phi.star.yw, 15, main="", prob=TRUE, xlim=c(.65,1.05), ylim=c(0,14), col=culer, xlab=expression(hat(phi)))
-lines(density(phi.yw, bw=.02), lwd=2) 
-u = seq(.75, 1.1, by=.001)
-lines(u, dnorm(u, mean=.96, sd=.03), lty="dashed", lwd=2) 
-legend(.65,14, legend=c('true distribution', 'bootstrap distribution', 'normal approximation'),
-        bty='n', col=1, lty=c(1,0,2), lwd=c(2,0,2),
-		pch=c(NA,22,NA), pt.bg=c(NA,culer,NA), pt.cex=2.5)
-dev.off()
-#################################################
-
-
-########################
-pdf(file="gnp96both.pdf",width=7.5,height=4.5)
+#####################
+# Example 3.38: Analysis of GNP Data
 layout(matrix(c(1, 1, 2), ncol = 1))
 par(mar=c(2.75,2.5,.5,.5), mgp=c(1.6,.6,0), cex.lab=1.1) 
 plot(gnp, ylab="Billions of Dollars",  type='n')
@@ -193,17 +102,19 @@ acf(gnp, 48, panel.first=grid(lty=1))
 dev.off()
 
 
-#############
-pdf(file="gnp96gr.pdf",width=7.5,height=3.5)
-par(mar=c(2.75,2.5,.5,.5), mgp=c(1.6,.6,0)) 
+### Plots of difference of GNP itself and of logGNP (growth rate)
+par(mfrow=c(2,1), mar=c(2.75,2.5,.5,.5), mgp=c(1.6,.6,0)) 
+plot(diff(gnp), ylab="diff(GNP)", type='n')
+grid(lty=1, col=gray(.9)); lines(diff(gnp))
+abline(h=mean(diff(gnp)), col=4)
+
 plot(diff(log(gnp)), ylab="GNP Growth Rate", type='n')
 grid(lty=1, col=gray(.9)); lines(diff(log(gnp)))
 abline(h=mean(diff(log(gnp))), col=4)
 dev.off()
 
 
-############ 
-pdf(file="gnp96gracf.pdf",width=7.5,height=4.25)
+### ACF and PACF
 ACF = acf(diff(log(gnp)), 24, plot=FALSE)$acf[-1]
 PACF = pacf(diff(log(gnp)), 24, plot=FALSE)$acf
 num = length(gnp)-1
@@ -223,15 +134,15 @@ plot(LAG, PACF, type="h", xlab="LAG",  ylim = c(minu, maxu) , panel.first=grid(l
 abline(h = c(L, U), col=4, lty=2)  
 dev.off()
 
-#############
-pdf(file="gnpdiag.pdf",width=7.5)
+#####################
+# Example 3.39: Diagnostics for GNP Growth Rate
 sarima(diff(log(gnp)), 0, 0, 2) # MA(2)
 dev.off()
 
 
 
-#############
-pdf(file="varvediag.pdf",width=7.5, height=4)
+#####################
+# Example 3.39: Diagnostics for the Glacial Varve Series
 par(mfrow=c(2,1), mar=c(2,2.5,.5,0)+.5, mgp=c(1.4,.6,0))
 rs = resid(arima(log(varve), order=c(0,1,1)))
   pval=c()
@@ -259,8 +170,8 @@ rs = resid(arima(log(varve), order=c(1,1,1)))
 dev.off()
 	
 
-#############
-pdf(file="uspop.pdf",width=7, height=3)
+#####################
+# Example 3.41: A Problem with Overfitting in US Population Data
 par(mar=c(2,2.5,.5,0)+.5, mgp=c(1.6,.6,0))
 dat = read.table("uspop.dat")
 y = dat[,2]
@@ -275,7 +186,16 @@ mtext(expression(""%*% 10^8), side=2, line=1.5, adj=.95)
 axis(1, seq(1910,1990,by=10), labels=FALSE)
 dev.off()
 
+#####################
+# Example 3.42: Model Choice for the US GNP Series
+gnpgr=diff(log(gnp))
+sarima(gnpgr, 1, 0, 0) # AR(1)
+sarima(gnpgr, 0, 0, 2) # MA(2)
 
+
+####################
+####################
+####################
 ####################
 pdf(file="corerr1.pdf",width=7, height=4)
 par(mfrow=c(2,1), mar=c(2.5,2.5,0,0)+.5, mgp=c(1.5,.6,0))
