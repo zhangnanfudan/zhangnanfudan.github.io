@@ -64,7 +64,8 @@ points( fit$x)
 # Using another stationary covariance. 
 # smoothness is the shape parameter for the Matern. 
 
-fit <- Krig(ChicagoO3$x, ChicagoO3$y, Covariance="Matern", theta=10, smoothness=1.0)  
+fit <- Krig(ChicagoO3$x, ChicagoO3$y, 
+            Covariance="Matern", theta=10, smoothness=1.0)  
 summary( fit)
 
 #
@@ -169,34 +170,3 @@ obj<- Krig( xd, yd, weights=weights, theta=4)
 
 ## End(Not run)
 
-## Not run: 
-# A correlation model example
-# fit krig surface using a mean and sd function to standardize 
-# first get stats from 1987 summer Midwest O3 data set 
-data(ozone2)
-stats.o3<- stats( ozone2$y)
-mean.o3<- Tps( ozone2$lon.lat, c( stats.o3[2,]))
-sd.o3<- Tps(  ozone2$lon.lat, c( stats.o3[3,]))
-
-#
-# Now use these to fit particular day ( day 16) 
-# and use great circle distance 
-
-
-fit<- Krig( ozone2$lon.lat, ozone2$y[16,], 
-            theta=350, mean.obj=mean.o3, sd.obj=sd.o3, 
-            Covariance="Matern", Distance="rdist.earth",
-            smoothness=1.0,
-            na.rm=TRUE) #
-
-
-# the finale
-surface( fit, type="I")
-US( add=TRUE)
-points( fit$x)
-title("Estimated ozone surface")
-
-## End(Not run)
-## Not run: 
-#
-#
