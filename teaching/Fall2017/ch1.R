@@ -84,8 +84,8 @@ sumdice <- function(n) {
 }
 
 sumdice(2)
-a <- sumdice(100)
-a / 100
+a <- sumdice(10000)
+a / 10000
 
 # An alternative
 sumdice <- function(n)
@@ -125,7 +125,7 @@ attach(iris)
 summary(Petal.Length[51:100]) #versicolor petal length
 detach(iris) # Good practice!
 
-
+#########################
 # Arrays
 # An array is a multiply subscripted collection of a single type of data.
 x <- 1:24 # vector
