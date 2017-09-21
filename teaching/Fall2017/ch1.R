@@ -161,6 +161,7 @@ iris3 #50 × 4 × 3 array of iris data
 ?rnorm
 w <- wilcox.test(rnorm(10), rnorm(10, 2))
 w
+typeof(w)
 w$statistic
 w$p.value
 
