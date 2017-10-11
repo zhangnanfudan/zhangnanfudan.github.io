@@ -131,7 +131,8 @@
     n <- 1000
     nu <- 2
     X <- matrix(rnorm(n*nu), n, nu)^2 #matrix of sq. normals
-    #sum the squared normals across each row: method 1
+    #sum the squared normals across each row: 
+    #method 1
     y <- rowSums(X)
     #method 2
     y <- apply(X, MARGIN=1, FUN=sum)  #a vector length n
@@ -155,76 +156,6 @@
     par(mfcol=c(1,1))         #restore display
 
 
-### Example 3.12 (Mixture of several gamma distributions)
-    # density estimates are plotted
-
-    n <- 5000
-    k <- sample(1:5, size=n, replace=TRUE, prob=(1:5)/15)
-    rate <- 1/k
-    x <- rgamma(n, shape=3, rate=rate)
-
-    #plot the density of the mixture
-    #with the densities of the components
-    plot(density(x), xlim=c(0,40), ylim=c(0,.3),
-        lwd=3, xlab="x", main="")
-    for (i in 1:5)
-        lines(density(rgamma(n, 3, 1/i)))
-
-
-### Example 3.13 (Mixture of several gamma distributions)
-
-    n <- 5000
-    p <- c(.1,.2,.2,.3,.2)
-    lambda <- c(1,1.5,2,2.5,3)
-    k <- sample(1:5, size=n, replace=TRUE, prob=p)
-    rate <- lambda[k]
-    x <- rgamma(n, shape=3, rate=rate)
-
-
-### Example 3.14 (Plot density of mixture)
-
-    f <- function(x, lambda, theta) {
-        #density of the mixture at the point x
-        sum(dgamma(x, 3, lambda) * theta)
-    }
-
-    p <- c(.1,.2,.2,.3,.2)
-    lambda <- c(1,1.5,2,2.5,3)
-
-    x <- seq(0, 8, length=200)
-    dim(x) <- length(x)  #need for apply
-
-    #compute density of the mixture f(x) along x
-    y <- apply(x, 1, f, lambda=lambda, theta=p)
-
-    #plot the density of the mixture
-    plot(x, y, type="l", ylim=c(0,.85), lwd=3, ylab="Density")
-
-    for (j in 1:5) {
-        #add the j-th gamma density to the plot
-        y <- apply(x, 1, dgamma, shape=3, rate=lambda[j])
-        lines(x, y)
-    }
-
-
-### Example 3.15 (Poisson-Gamma mixture)
-
-    #generate a Poisson-Gamma mixture
-    n <- 1000
-    r <- 4
-    beta <- 3
-    lambda <- rgamma(n, r, beta) #lambda is random
-
-    #now supply the sample of lambda's as the Poisson mean
-    x <- rpois(n, lambda)        #the mixture
-
-    #compare with negative binomial
-    mix <- tabulate(x+1) / n
-    negbin <- round(dnbinom(0:max(x), r, beta/(1+beta)), 3)
-    se <- sqrt(negbin * (1 - negbin) / n)
-
-    round(rbind(mix, negbin, se), 3)
-    
     
 ### Example 3.16 (Spectral decomposition method)
 
@@ -281,105 +212,3 @@
         X <- Z %*% Q + matrix(mu, n, d, byrow=TRUE)
         X
     }
-    
-    #generating the samples according to the mean and covariance 
-    #structure as the four-dimensional iris virginica data
-    y <- subset(x=iris, Species=="virginica")[, 1:4]
-    mu <- colMeans(y)
-    Sigma <- cov(y)
-    mu
-    Sigma
-
-    #now generate MVN data with this mean and covariance
-    X <- rmvn.Choleski(200, mu, Sigma)
-    pairs(X)
-
-### Example 3.19 (Comparing performance of MVN generators)
-
-    library(MASS)
-    library(mvtnorm)
-    n <- 100          #sample size
-    d <- 30           #dimension
-    N <- 2000         #iterations
-    mu <- numeric(d)
-
-    set.seed(100)
-    system.time(for (i in 1:N)
-        rmvn.eigen(n, mu, cov(matrix(rnorm(n*d), n, d))))
-    set.seed(100)
-    system.time(for (i in 1:N)
-        rmvn.svd(n, mu, cov(matrix(rnorm(n*d), n, d))))
-    set.seed(100)
-    system.time(for (i in 1:N)
-        rmvn.Choleski(n, mu, cov(matrix(rnorm(n*d), n, d))))
-    set.seed(100)
-    system.time(for (i in 1:N)
-        mvrnorm(n, mu, cov(matrix(rnorm(n*d), n, d))))
-    set.seed(100)
-    system.time(for (i in 1:N)
-        rmvnorm(n, mu, cov(matrix(rnorm(n*d), n, d))))
-    set.seed(100)
-    system.time(for (i in 1:N)
-        cov(matrix(rnorm(n*d), n, d)))
-
-    detach(package:MASS)
-    detach(package:mvtnorm)
-
-### Example 3.20 (Multivariate normal mixture)
-
-    library(MASS)  #for mvrnorm
-    #ineffecient version loc.mix.0 with loops
-
-    loc.mix.0 <- function(n, p, mu1, mu2, Sigma) {
-        #generate sample from BVN location mixture
-        X <- matrix(0, n, 2)
-
-        for (i in 1:n) {
-            k <- rbinom(1, size = 1, prob = p)
-            if (k)
-                X[i,] <- mvrnorm(1, mu = mu1, Sigma) else
-                X[i,] <- mvrnorm(1, mu = mu2, Sigma)
-            }
-        return(X)
-    }
-
-    #more efficient version
-    loc.mix <- function(n, p, mu1, mu2, Sigma) {
-        #generate sample from BVN location mixture
-        n1 <- rbinom(1, size = n, prob = p)
-        n2 <- n - n1
-        x1 <- mvrnorm(n1, mu = mu1, Sigma)
-        x2 <- mvrnorm(n2, mu = mu2, Sigma)
-        X <- rbind(x1, x2)            #combine the samples
-        return(X[sample(1:n), ])      #mix them
-    }
-
-    x <- loc.mix(1000, .5, rep(0, 4), 2:5, Sigma = diag(4))
-    r <- range(x) * 1.2
-    par(mfrow = c(2, 2))
-    for (i in 1:4)
-        hist(x[ , i], xlim = r, ylim = c(0, .3), freq = FALSE,
-        main = "", breaks = seq(-5, 10, .5))        
-
-    detach(package:MASS)
-    par(mfrow = c(1, 1))
-    
-
-### Example 3.21 (Generating variates on a sphere)
-
-    runif.sphere <- function(n, d) {
-        # return a random sample uniformly distributed
-        # on the unit sphere in R ^d
-        M <- matrix(rnorm(n*d), nrow = n, ncol = d)
-        L <- apply(M, MARGIN = 1,
-                   FUN = function(x){sqrt(sum(x*x))})
-        D <- diag(1 / L)
-        U <- D %*% M
-        U
-    }
-
-    #generate a sample in d=2 and plot
-    X <- runif.sphere(200, 2)
-    par(pty = "s")
-    plot(X, xlab = bquote(x[1]), ylab = bquote(x[2]))
-    par(pty = "m")
