@@ -106,8 +106,8 @@
     p <- seq(.1, .9, .1)
     Qhat <- quantile(y, p)   #quantiles of sample
     Q <- qbeta(p, 2, 2)      #theoretical quantiles
-    se <- sqrt(p * (1-p) / (n * dbeta(Q, 2, 2)^2)) #see Ch. 2
-    round(rbind(Qhat, Q, se), 3)
+    # se <- sqrt(p * (1-p) / (n * dbeta(Q, 2, 2)^2)) #see Ch. 2
+    round(rbind(Qhat, Q), 3)
 
 
 ### Example 3.8 (Beta distribution)
@@ -140,11 +140,11 @@
     mean(y^2)
 
 
-### Example 3.11 (Convolutions and mixtures)
+### Example (Convolutions and mixtures of normal dist)
 
     n <- 1000
-    x1 <- rgamma(n, 2, 2)
-    x2 <- rgamma(n, 2, 4)
+    x1 <- rnorm(n, 0, 1)
+    x2 <- rnorm(n, 10, 1)
     s <- x1 + x2              #the convolution
     u <- runif(n)
     k <- as.integer(u > 0.5)  #vector of 0's and 1's
