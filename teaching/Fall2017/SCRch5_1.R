@@ -51,7 +51,7 @@
     Phi <- pnorm(x)
     print(round(rbind(x, p, Phi), 3))
 
-
+##### Oct 26 #####
 ### Example 5.5 (Error bounds for MC integration)
 
     x <- 2
