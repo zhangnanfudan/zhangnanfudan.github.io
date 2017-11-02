@@ -113,9 +113,9 @@
     summary(L)$sigma^2
     summary(L)$r.squared
 
-    
 
-  
+##### Nov 2 #####
+    
 ### Example 5.10 (Choice of the importance function)
 #code for plot is at the end of the file
     
@@ -154,7 +154,7 @@
     theta.hat[5] <- mean(fg)
     se[5] <- sd(fg)
     
-    rbind(theta.hat, se)
+    round(rbind(theta.hat, se),digits=4)
     
     
 ### Example 5.11 (Example 5.10, cont.)
@@ -221,22 +221,22 @@
     
     #figure (a)
     plot(x, g, type = "l", main = "", ylab = "",
-         ylim = c(0,2), lwd = w)
-    lines(x, g/g, lty = 2, lwd = w)
-    lines(x, f1, lty = 3, lwd = w)
-    lines(x, f2, lty = 4, lwd = w)
-    lines(x, f3, lty = 5, lwd = w)
-    lines(x, f4, lty = 6, lwd = w)
+         ylim = c(0,2), lwd = w, col=1)
+    lines(x, g/g, col = 2, lwd = w)
+    lines(x, f1, col = 3, lwd = w)
+    lines(x, f2, col = 4, lwd = w)
+    lines(x, f3, col = 5, lwd = w)
+    lines(x, f4, col = 6, lwd = w)
     legend("topright", legend = c("g", 0:4),
-           lty = 1:6, lwd = w, inset = 0.02)
+           col = 1:6, lwd = w, inset = 0.02)
     
     #figure (b)
     plot(x, g, type = "l", main = "", ylab = "",
-         ylim = c(0,3.2), lwd = w, lty = 2)
-    lines(x, g/f1, lty = 3, lwd = w)
-    lines(x, g/f2, lty = 4, lwd = w)
-    lines(x, g/f3, lty = 5, lwd = w)
-    lines(x, g/f4, lty = 6, lwd = w)
+         ylim = c(0,3.2), lwd = w, col = 2)
+    lines(x, g/f1, col = 3, lwd = w)
+    lines(x, g/f2, col = 4, lwd = w)
+    lines(x, g/f3, col = 5, lwd = w)
+    lines(x, g/f4, col = 6, lwd = w)
     legend("topright", legend = c(0:4),
-           lty = 2:6, lwd = w, inset = 0.02)
+           col = 2:6, lwd = w, inset = 0.02)
     
