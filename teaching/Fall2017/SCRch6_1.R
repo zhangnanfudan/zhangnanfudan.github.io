@@ -93,11 +93,39 @@
         mse[k+1, 3:4] <- trimmed.mse(n=n, m=m, k=k, p=.95)
         mse[k+1, 5:6] <- trimmed.mse(n=n, m=m, k=k, p=.9)
     }
-
+    
+    mse # see errata
 ### Example 6.4 (Confidence interval for variance)
 
-n <- 20
-alpha <- .05
-x <- rnorm(n, mean=0, sd=2)
-UCL <- (n-1) * var(x) / qchisq(alpha, df=n-1)
-UCL
+    n <- 20
+    alpha <- .05
+    x <- rnorm(n, mean=0, sd=2)
+    UCL <- (n-1) * var(x) / qchisq(alpha, df=n-1)
+    UCL
+    ### Example 6.5 (MC estimate of confidence level)
+    
+    #set.seed(123)
+    n <- 20
+    alpha <- .05
+    UCL <- replicate(1000, expr = {
+      x <- rnorm(n, mean = 0, sd = 2)
+      (n-1) * var(x) / qchisq(alpha, df = n-1)
+    } )
+    #count the number of intervals that contain sigma^2=4
+    sum(UCL > 4)
+    #or compute the mean to get the confidence level
+    mean(UCL > 4)
+    
+    
+    ### Example 6.6 (Empirical confidence level)
+    
+    n <- 20
+    alpha <- .05
+    UCL <- replicate(1000, expr = {
+      x <- rchisq(n, df = 2)
+      (n-1) * var(x) / qchisq(alpha, df = n-1)
+    } )
+    sum(UCL > 4)
+    mean(UCL > 4)
+    
+    
