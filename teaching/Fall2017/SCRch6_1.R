@@ -95,6 +95,8 @@
     }
     
     mse # see errata
+    
+    
 ### Example 6.4 (Confidence interval for variance)
 
     n <- 20
@@ -102,7 +104,8 @@
     x <- rnorm(n, mean=0, sd=2)
     UCL <- (n-1) * var(x) / qchisq(alpha, df=n-1)
     UCL
-    ### Example 6.5 (MC estimate of confidence level)
+    
+### Example 6.5 (MC estimate of confidence level)
     
     #set.seed(123)
     n <- 20
@@ -117,7 +120,7 @@
     mean(UCL > 4)
     
     
-    ### Example 6.6 (Empirical confidence level)
+### Example 6.6 (Empirical confidence level)
     
     n <- 20
     alpha <- .05
