@@ -50,6 +50,26 @@ for (i in 1:length(n)) {
 
 p.reject
 
+# Use an exact variance to calculate the critical values
+cv <- qnorm(.975, 0, sqrt(6*(n-2) / ((n+1)*(n+3))))
+#n is a vector of sample sizes
+#we are doing length(n) different simulations
+
+p.reject <- numeric(length(n)) #to store sim. results
+m <- 10000                     #num. repl. each sim.
+
+for (i in 1:length(n)) {
+  sktests <- numeric(m)       #test decisions
+  for (j in 1:m) {
+    x <- rnorm(n[i])
+    #test decision is 1 (reject) or 0
+    sktests[j] <- as.integer(abs(sk(x)) >= cv[i] )
+  }
+  p.reject[i] <- mean(sktests) #proportion rejected
+}
+
+p.reject
+
 
 ### Example 6.9 (Empirical power)
 
@@ -67,6 +87,7 @@ for (i in 1:M) {
     x <- rnorm(n, mean = mu1, sd = sigma)
     ttest <- t.test(x,
                     alternative = "greater", mu = mu0)
+    # try "two.sided" and "less"
     ttest$p.value  } )
   power[i] <- mean(pvalues <= .05)
 }
@@ -164,6 +185,11 @@ legend("topright", 1, c("skewness", "S-W", "energy"),
        lty = c(1,2,4), col=1:3, inset = .02)
 
 
+
+
+
+
+###################################################
 ### Example 6.12 (Count Five test statistic)
 
 x1 <- rnorm(20, 0, sd = 1)
