@@ -11,8 +11,8 @@ hist(x)
 ### Example 7.2 (Bootstrap estimate of standard error)
 
 library(bootstrap)    #for the law data
-print(cor(law$LSAT, law$GPA))
-print(cor(law82$LSAT, law82$GPA))
+cor(law$LSAT, law$GPA)
+cor(law82$LSAT, law82$GPA)
 
 #set up the bootstrap
 B <- 200            #number of replicates
@@ -28,9 +28,11 @@ for (b in 1:B) {
   R[b] <- cor(LSAT, GPA)
 }
 #output
-print(se.R <- sd(R))
-hist(R, prob = TRUE)
+se.R <- sd(R)
+se.R
 
+hist(R, prob = TRUE)
+abline(v=cor(law$LSAT, law$GPA))
 
 ### Example 7.3 (Bootstrap estimate of standard error: boot function)
 
@@ -40,6 +42,7 @@ r <- function(x, i) {
 }
 
 library(boot)       #for boot function
+?boot    # check statistic
 obj <- boot(data = law, statistic = r, R = 2000)
 obj
 y <- obj$t
@@ -70,7 +73,6 @@ obj
 
 ### Example 7.5 (Bootstrap estimate of bias of a ratio estimate)
 
-
 data(patch, package = "bootstrap")
 patch
 
@@ -90,6 +92,7 @@ bias <- mean(theta.b) - theta.hat
 se <- sd(theta.b)
 print(list(est=theta.hat, bias = bias,
            se = se, cv = bias/se))
+# cv stands for Coefficient of Variation
 
 
 #################
