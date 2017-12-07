@@ -2,52 +2,7 @@
 ### Bootstrap CI (cont.) ###
 ############################
 
-### Example 7.12 (Bootstrap t confidence interval)
 
-boot.t.ci <-
-  function(x, B = 500, R = 100, level = .95, statistic){
-    #compute the bootstrap t CI
-    x <- as.matrix(x);  n <- nrow(x)
-    stat <- numeric(B); se <- numeric(B)
-    
-    boot.se <- function(x, R, f) {
-      #local function to compute the bootstrap
-      #estimate of standard error for statistic f(x)
-      x <- as.matrix(x); m <- nrow(x)
-      th <- replicate(R, expr = {
-        i <- sample(1:m, size = m, replace = TRUE)
-        f(x[i, ])
-      })
-      return(sd(th))
-    }
-    
-    for (b in 1:B) {
-      j <- sample(1:n, size = n, replace = TRUE)
-      y <- x[j, ]
-      stat[b] <- statistic(y)
-      se[b] <- boot.se(y, R = R, f = statistic)
-    }
-    stat0 <- statistic(x)
-    t.stats <- (stat - stat0) / se
-    se0 <- sd(stat)
-    alpha <- 1 - level
-    Qt <- quantile(t.stats, c(alpha/2, 1-alpha/2), type = 1)
-    names(Qt) <- rev(names(Qt))
-    CI <- rev(stat0 - Qt * se0)
-  }
-
-
-### Example 7.13 (Bootstrap t confidence interval for patch ratio statistic)
-
-#boot package and patch data were loaded in Example 7.10
-library(boot)       #for boot and boot.ci
-data(patch, package = "bootstrap")
-
-dat <- cbind(patch$y, patch$z)
-stat <- function(dat) {
-  mean(dat[, 1]) / mean(dat[, 2]) }
-ci <- boot.t.ci(dat, statistic = stat, B=2000, R=200)
-print(ci)
 
 
 ### Example 7.14 (BCa bootstrap confidence interval)
