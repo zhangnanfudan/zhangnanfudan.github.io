@@ -1,80 +1,3 @@
-############################
-### Bootstrap CI (cont.) ###
-############################
-
-
-
-
-### Example 7.14 (BCa bootstrap confidence interval)
-
-boot.BCa <-
-  function(x, th0, th, stat, conf = .95) {
-    # bootstrap with BCa bootstrap confidence interval
-    # th0 is the observed statistic
-    # th is the vector of bootstrap replicates
-    # stat is the function to compute the statistic
-    
-    x <- as.matrix(x)
-    n <- nrow(x) #observations in rows
-    N <- 1:n
-    alpha <- (1 + c(-conf, conf))/2
-    zalpha <- qnorm(alpha)
-    
-    # the bias correction factor
-    z0 <- qnorm(sum(th < th0) / length(th))
-    
-    # the acceleration factor (jackknife est.)
-    th.jack <- numeric(n)
-    for (i in 1:n) {
-      J <- N[1:(n-1)]
-      th.jack[i] <- stat(x[-i, ], J)
-    }
-    L <- mean(th.jack) - th.jack
-    a <- sum(L^3)/(6 * sum(L^2)^1.5)
-    
-    # BCa conf. limits
-    adj.alpha <- pnorm(z0 + (z0+zalpha)/(1-a*(z0+zalpha)))
-    limits <- quantile(th, adj.alpha, type=6)
-    return(list("est"=th0, "BCa"=limits))
-  }
-
-
-### Example 7.15 (BCa bootstrap confidence interval)
-
-#boot package and patch data were loaded in Example 7.10
-#library(boot)       #for boot and boot.ci
-#data(patch, package = "bootstrap")
-
-n <- nrow(patch)
-B <- 2000
-y <- patch$y
-z <- patch$z
-x <- cbind(y, z)
-theta.b <- numeric(B)
-theta.hat <- mean(y) / mean(z)
-
-#bootstrap
-for (b in 1:B) {
-  i <- sample(1:n, size = n, replace = TRUE)
-  y <- patch$y[i]
-  z <- patch$z[i]
-  theta.b[b] <- mean(y) / mean(z)
-}
-#compute the BCa interval
-stat <- function(dat, index) {
-  mean(dat[index, 1]) / mean(dat[index, 2])  }
-
-boot.BCa(x, th0 = theta.hat, th = theta.b, stat = stat)
-
-
-
-### Example 7.16 (BCa bootstrap confidence interval using boot.ci)
-
-#using x from Example 7.15
-boot.obj <- boot(x, statistic = stat, R=2000)
-boot.ci(boot.obj, type=c("perc", "bca"))
-
-
 #####################
 ### The Jackknife ###
 #####################
@@ -104,8 +27,8 @@ print(se)
 
 
 ### Example 7.8 (Failure of jackknife)
-
-set.seed(123) #for the specific example given
+#for the specific example given
+set.seed(123)
 #change the seed to see other examples
 
 n <- 10
@@ -117,6 +40,7 @@ for (i in 1:n) {        #leave one out
   y <- x[-i]
   M[i] <- median(y)
 }
+
 Mbar <- mean(M)
 print(sqrt((n-1)/n * sum((M - Mbar)^2)))
 
@@ -128,119 +52,3 @@ print(sd(Mb))
 print(x)
 print(M)
 print(Mb)
-
-
-### Example 7.9 (Jackknife-after-bootstrap)
-
-# initialize
-data(patch, package = "bootstrap")
-n <- nrow(patch)
-y <- patch$y
-z <- patch$z
-B <- 2000
-theta.b <- numeric(B)
-# set up storage for the sampled indices
-indices <- matrix(0, nrow = B, ncol = n)
-
-# jackknife-after-bootstrap step 1: run the bootstrap
-for (b in 1:B) {
-  i <- sample(1:n, size = n, replace = TRUE)
-  y <- patch$y[i]
-  z <- patch$z[i]
-  theta.b[b] <- mean(y) / mean(z)
-  #save the indices for the jackknife
-  indices[b, ] <- i
-}
-
-#jackknife-after-bootstrap to est. se(se)
-se.jack <- numeric(n)
-for (i in 1:n) {
-  #in i-th replicate omit all samples with x[i]
-  keep <- (1:B)[apply(indices, MARGIN = 1,
-                      FUN = function(k) {!any(k == i)})]
-  se.jack[i] <- sd(theta.b[keep])
-}
-
-print(sd(theta.b))
-print(sqrt((n-1) * mean((se.jack - mean(se.jack))^2)))
-
-
-
-
-########################
-### Cross Validation ###
-########################
-
-### Example 7.17 (Model selection)
-
-#to prompt for next graph, uncomment line below
-#par(ask = TRUE)   
-
-library(DAAG); attach(ironslag)
-a <- seq(10, 40, .1)     #sequence for plotting fits
-
-L1 <- lm(magnetic ~ chemical)
-plot(chemical, magnetic, main="Linear", pch=16)
-yhat1 <- L1$coef[1] + L1$coef[2] * a
-lines(a, yhat1, lwd=2)
-
-L2 <- lm(magnetic ~ chemical + I(chemical^2))
-plot(chemical, magnetic, main="Quadratic", pch=16)
-yhat2 <- L2$coef[1] + L2$coef[2] * a + L2$coef[3] * a^2
-lines(a, yhat2, lwd=2)
-
-L3 <- lm(log(magnetic) ~ chemical)
-plot(chemical, magnetic, main="Exponential", pch=16)
-logyhat3 <- L3$coef[1] + L3$coef[2] * a
-yhat3 <- exp(logyhat3)
-lines(a, yhat3, lwd=2)
-
-L4 <- lm(log(magnetic) ~ log(chemical))
-plot(log(chemical), log(magnetic), main="Log-Log", pch=16)
-logyhat4 <- L4$coef[1] + L4$coef[2] * log(a)
-lines(log(a), logyhat4, lwd=2)
-
-### Example 7.18 (Model selection: Cross validation)
-
-# Example 7.17, cont.
-n <- length(magnetic)   #in DAAG ironslag
-e1 <- e2 <- e3 <- e4 <- numeric(n)
-
-# for n-fold cross validation
-# fit models on leave-one-out samples
-for (k in 1:n) {
-  y <- magnetic[-k]
-  x <- chemical[-k]
-  
-  J1 <- lm(y ~ x)
-  yhat1 <- J1$coef[1] + J1$coef[2] * chemical[k]
-  e1[k] <- magnetic[k] - yhat1
-  
-  J2 <- lm(y ~ x + I(x^2))
-  yhat2 <- J2$coef[1] + J2$coef[2] * chemical[k] +
-    J2$coef[3] * chemical[k]^2
-  e2[k] <- magnetic[k] - yhat2
-  
-  J3 <- lm(log(y) ~ x)
-  logyhat3 <- J3$coef[1] + J3$coef[2] * chemical[k]
-  yhat3 <- exp(logyhat3)
-  e3[k] <- magnetic[k] - yhat3
-  
-  J4 <- lm(log(y) ~ log(x))
-  logyhat4 <- J4$coef[1] + J4$coef[2] * log(chemical[k])
-  yhat4 <- exp(logyhat4)
-  e4[k] <- magnetic[k] - yhat4
-}
-
-
-c(mean(e1^2), mean(e2^2), mean(e3^2), mean(e4^2))
-
-#selected model, fitted in Example 7.17
-L2
-
-par(mfrow = c(1, 2))    #layout for graphs
-plot(L2$fit, L2$res)    #residuals vs fitted values
-abline(0, 0)            #reference line
-qqnorm(L2$res)          #normal probability plot
-qqline(L2$res)          #reference line
-par(mfrow = c(1, 1))    #restore display
