@@ -87,10 +87,10 @@
     # paths
     ## individual
     par(mfrow=c(2,2))
-    plot(rw1$x, type='l', ylim=y.lim)
-    plot(rw2$x, type='l', ylim=y.lim)
-    plot(rw3$x, type='l', ylim=y.lim)
-    plot(rw4$x, type='l', ylim=y.lim)
+    plot(rw1$x, type='l')
+    plot(rw2$x, type='l')
+    plot(rw3$x, type='l')
+    plot(rw4$x, type='l')
     
     ## comparative
     y.lim=range(c(rw1$x, rw2$x, rw3$x, rw4$x))
@@ -131,53 +131,99 @@
     legend('topleft',legend=1:4, lty=1, col=2:5)
     # xtable::xtable(round(cbind(Q, Qrw), 3)) #latex format
 
-### Code for Figures 9.4(a) and 9.4(b)
-
-    plot(x, type="l")
-    abline(h=b, v=501, lty=3)
-    xb <- x[- (1:501)]
-    hist(xb, prob=TRUE, xlab=bquote(beta), ylab="X", main="")
-    z <- seq(min(xb), max(xb), length=100)
-    lines(z, dnorm(z, mean(xb), sd(xb)))
-
-
-### Example 9.5 (Bayesian inference: A simple investment model)
-
-    b <- .2          #actual value of beta
-    w <- .25         #width of the uniform support set
-    m <- 5000        #length of the chain
-    burn <- 1000     #burn-in time
-    days <- 250
-    x <- numeric(m)  #the chain
-
-    # generate the observed frequencies of winners
-    i <- sample(1:5, size=days, replace=TRUE,
-            prob=c(1, 1-b, 1-2*b, 2*b, b))
-    win <- tabulate(i)
-    print(win)
-
-    prob <- function(y, win) {
-        # computes (without the constant) the target density
-        if (y < 0 || y >= 0.5)
-            return (0)
-        return((1/3)^win[1] *
-            ((1-y)/3)^win[2] * ((1-2*y)/3)^win[3] *
-                ((2*y)/3)^win[4] * (y/3)^win[5])
-    }
-
-    u <- runif(m)         #for accept/reject step
-    v <- runif(m, -w, w)  #proposal distribution
-    x[1] <- .25
-    for (i in 2:m) {
-        y <- x[i-1] + v[i]
-        if (u[i] <= prob(y, win) / prob(x[i-1], win))
-            x[i] <- y  else
-                x[i] <- x[i-1]
-    }
-
-    print(win)
-    print(round(win/days, 3))
-    print(round(c(1, 1-b, 1-2*b, 2*b, b)/3, 3))
-    xb <- x[(burn+1):m]
-    print(mean(xb))
+  
+### Example 9.6 (Independence sampler)
     
+    m <- 5000 #length of chain
+    xt <- numeric(m)
+    a <- 1          #parameter of Beta(a,b) proposal dist.
+    b <- 1          #parameter of Beta(a,b) proposal dist.
+    
+    # alternative
+    a <- 5            #parameter of Beta(a,b) proposal dist.
+    b <- 2            #parameter of Beta(a,b) proposal dist.
+    
+    p <- .2           #mixing parameter
+    n <- 30           #sample size
+    mu <- c(0, 5)     #parameters of the normal densities
+    sigma <- c(1, 1)
+    
+    # generate the observed sample
+    i <- sample(1:2, size=n, replace=TRUE, prob=c(p, 1-p))
+    x <- rnorm(n, mu[i], sigma[i])
+    
+    # generate the independence sampler chain
+    u <- runif(m)
+    y <- rbeta(m, a, b)      #proposal distribution
+    xt[1] <- .5
+    
+    for (i in 2:m) {
+      fy <- y[i] * dnorm(x, mu[1], sigma[1]) +
+        (1-y[i]) * dnorm(x, mu[2], sigma[2])
+      fx <- xt[i-1] * dnorm(x, mu[1], sigma[1]) +
+        (1-xt[i-1]) * dnorm(x, mu[2], sigma[2])
+      
+      r <- prod(fy / fx) *
+        (xt[i-1]^(a-1) * (1-xt[i-1])^(b-1)) /
+        (y[i]^(a-1) * (1-y[i])^(b-1))
+      
+      if (u[i] <= r) xt[i] <- y[i] else
+        xt[i] <- xt[i-1]
+    }
+    
+    plot(xt, type="l", ylab="p")
+    hist(xt[101:m], main="", xlab="p", prob=TRUE)
+    print(mean(xt[101:m]))
+    
+    
+### Example 9.7 (Gibbs sampler: Bivariate distribution)
+    
+    #initialize constants and parameters
+    N <- 5000               #length of chain
+    burn <- 1000            #burn-in length
+    X <- matrix(0, N, 2)    #the chain, a bivariate sample
+    
+    rho <- -.75             #correlation
+    mu1 <- 0
+    mu2 <- 2
+    sigma1 <- 1
+    sigma2 <- .5
+    s1 <- sqrt(1-rho^2)*sigma1
+    s2 <- sqrt(1-rho^2)*sigma2
+    
+    ###### generate the chain #####
+    
+    X[1, ] <- c(mu1, mu2)            #initialize
+    
+    for (i in 2:N) {
+      x2 <- X[i-1, 2]
+      m1 <- mu1 + rho * (x2 - mu2) * sigma1/sigma2
+      X[i, 1] <- rnorm(1, m1, s1)
+      x1 <- X[i, 1]
+      m2 <- mu2 + rho * (x1 - mu1) * sigma2/sigma1
+      X[i, 2] <- rnorm(1, m2, s2)
+    }
+    
+    b <- burn + 1
+    x <- X[b:N, ]
+    
+    # compare sample statistics to parameters
+    colMeans(x)
+    cov(x)
+    cor(x)
+    
+    library(MASS)
+    S = matrix(c(sigma1^2, rho*sigma1*sigma2,
+                 rho*sigma1*sigma2, sigma2^2),2)
+    x_MASS = mvrnorm(n=dim(x)[1],mu=c(mu1, mu2), Sigma=S)
+    
+    par(mfrow=c(1,2))
+    plot(x, cex=.5, xlab=bquote(X[1]),
+         ylab=bquote(X[2]), ylim=range(x[,2]), main='MCMC')
+    plot(x_MASS, cex=.5, xlab=bquote(X[1]),
+         ylab=bquote(X[2]), ylim=range(x[,2]), main='MASS')
+    
+    
+    
+    
+
