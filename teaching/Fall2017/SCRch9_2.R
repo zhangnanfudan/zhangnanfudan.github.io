@@ -40,7 +40,7 @@
         return(x)
         }
 
-    sigma <- .2     #parameter of proposal distribution
+    sigma <- .6     #parameter of proposal distribution
     k <- 4          #number of chains to generate
     n <- 15000      #length of chains
     b <- 1000       #burn-in length
@@ -60,6 +60,7 @@
     print(Gelman.Rubin(psi))
 
     #plot psi for the four chains
+    set.seed(123)
     par(mfrow=c(2,2))
     for (i in 1:k)
         plot(psi[i, (b+1):n], type="l",
@@ -67,6 +68,7 @@
     par(mfrow=c(1,1)) #restore default
 
     #plot the sequence of R-hat statistics
+    set.seed(123)
     rhat <- rep(0, n)
     for (j in (b+1):n)
         rhat[j] <- Gelman.Rubin(psi[,1:j])
