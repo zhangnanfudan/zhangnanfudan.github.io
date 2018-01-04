@@ -40,7 +40,7 @@
         return(x)
         }
 
-    sigma <- .6     #parameter of proposal distribution
+    sigma <- 4     #parameter of proposal distribution
     k <- 4          #number of chains to generate
     n <- 15000      #length of chains
     b <- 1000       #burn-in length
