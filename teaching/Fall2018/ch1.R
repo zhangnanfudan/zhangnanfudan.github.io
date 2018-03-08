@@ -19,111 +19,94 @@ tsplot(speech)
 dev.off()
 
 ########### 
-# DowJonesIndustrialAverage
-library(TTR)
-djia = getYahooData("^DJI", start=20060420, end=20160420, freq="daily")
+# Dow Jones Industrial Average
+library(quantmod)
+getSymbols("^DJI", from="2006-04-20", to="2016-04-20", periodicity="daily")
+djia = DJI
 library(xts)                              # if don't use TTR
-djiar = diff(log(djia$Close))[-1]         # approximate returns
+djiar = diff(log(djia$DJI.Close))[-1]         # approximate returns
 plot(djiar, main="DJIA Returns", type="n")  
 lines(djiar) 
+
 ###########
 # New York Stock Exchange
-par(mar=c(3,3,1,1), mgp=c(1.6,.6,0))
-plot(nyse,   type='n', ylab='NYSE Returns')
-grid(lty=1);   lines(nyse); 
-dev.off()
-
-
-
+# tsplot(nyse, ylab='NYSE Returns')
+# dev.off()
 
 #########
 # SOI and Fish
-par(mfrow = c(2,1), mar=c(2,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
-plot(soi, ylab="", xlab="", main="Southern Oscillation Index",   type='n')
-grid(lty=1); lines(soi)
-plot(rec, ylab="", main="Recruitment",  type='n')
-grid(lty=1); lines(rec)
+par(mfrow = c(2,1))  # set up the graphics
+tsplot(soi, ylab="", main="Southern Oscillation Index")
+tsplot(rec, ylab="", main="Recruitment") 
 dev.off()
 
 
 #########
 # fMRI
-par(mfrow = c(2,1), mar=c(2,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
-ts.plot(fmri1[,2:5], ylab="BOLD", xlab="", main="Cortex", type='n')
-grid(lty=1); par(new=TRUE)
+par(mfrow=c(2,1), mar=c(3,2,1,0)+.5, mgp=c(1.6,.6,0))  
 ts.plot(fmri1[,2:5], col=1:4, ylab="BOLD", xlab="", main="Cortex")
-#
-ts.plot(fmri1[,6:9], ylab="BOLD", xlab="", main="Thalamus & Cerebellum", type='n')
-grid(lty=1); par(new=TRUE)
 ts.plot(fmri1[,6:9], col=1:4, ylab="BOLD", xlab="", main="Thalamus & Cerebellum")
-mtext("Time (1 pt = 2 sec)", side=1, line=1.5)
+mtext("Time (1 pt = 2 sec)", side=1, line=2) 
 dev.off()
 
 
 #####################
 # Earthquakes and Explosions
-par(mfrow = c(2,1), mar=c(2,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
-plot(EQ5, main="Earthquake", xlab="", type='n')
-grid(lty=1); lines(EQ5)
-plot(EXP6, main="Explosion", xlab="", type='n')  
-grid(lty=1); lines(EXP6)
-mtext("Time", side=1, line=1.5)
+par(mfrow=c(2,1))
+tsplot(EQ5, main="Earthquake")
+tsplot(EXP6, main="Explosion")
 dev.off()
 
 
 ####################
-par(mfrow = c(2,1), mar=c(2,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
-set.seed(1)
-w = rnorm(500,0,1)                    # 500 N(0,1) variates
-v = filter(w, sides=2, filter=rep(1/3,3))  # moving average
-plot.ts(w, main="white noise", type='n')
-grid(lty=1, col=gray(.9)); lines(w)
-plot.ts(v, ylim=c(-3,3), main="moving average", type='n')
-grid(lty=1, col=gray(.9)); lines(v)
+# Example 1.9 white noise and moving average
+w = rnorm(500,0,1)  # 500 N(0,1) variates
+v = filter(w, sides=2, rep(1/3,3))  # moving average
+par(mfrow=c(2,1))
+tsplot(w, main="white noise")
+tsplot(v, ylim=c(-3,3), main="moving average")
+
+# now try this (not in text):  
+# dev.new()  # open a new graphic device
+# ts.plot(w, v, lty=2:1, col=1:2, lwd=1:2)
 dev.off()
 
 
 ####################
-# Autoregression
-par(mar=c(2,2,1,0)+.5, mgp=c(1.6,.6,0))
+# Example 1.10 Autoregression
 w = rnorm(550,0,1)  # 50 extra to avoid startup problems
 x = filter(w, filter=c(1,-.9), method="recursive")[-(1:50)]
-plot.ts(x, main="autoregression", type='n')
-grid(lty=1, col=gray(.9)); lines(x)
+tsplot(x, main="autoregression")
 dev.off()
 
 
 #################
-# RW with Drift
-par(mar=c(2,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
-set.seed(154)                # so you can reproduce the results
-w = rnorm(200,0,1);  x = cumsum(w)   # two commands in one line
-wd = w +.2;   xd = cumsum(wd)
-plot.ts(xd, ylim=c(-5,55), main="random walk", ylab='',   type='n')
-grid(lty=1); lines(xd)
-lines(x, col=4); abline(h=0, col=4, lty=2)
+# Example 1.11 RW with Drift
+set.seed(154) # so you can reproduce the results
+w = rnorm(200); x = cumsum(w) # two commands in one line
+wd = w +.2;    xd = cumsum(wd)
+tsplot(xd, ylim=c(-5,55), main="random walk", ylab='')
+lines(x, col=4) 
+abline(h=0, col=4, lty=2)
 abline(a=0, b=.2, lty=2)
 dev.off()
 
 
 ####################
-# Signal in Noise
-par(mfrow = c(3,1), mar=c(2,2.5,1,0)+.5, mgp=c(1.6,.6,0))
-cs = 2*cos(2*pi*1:500/50 + .6*pi);  w = rnorm(500,0,1)
-par(mfrow=c(3,1), mar=c(3,2,2,1), cex.main=1.05)
-plot.ts(cs, ylab='',xlab='', main=expression(2*cos(2*pi*t/50+.6*pi)), type='n', cex.main=1.5)
- grid(lty=1, col=gray(.9)); lines(cs) 
-plot.ts(cs+w, ylab='',xlab='',main=expression(2*cos(2*pi*t/50+.6*pi) + N(0,1)), type='n', cex.main=1.5)
- grid(lty=1, col=gray(.9)); lines(cs+w) 
-plot.ts(cs+5*w, ylab='', main=expression(2*cos(2*pi*t/50+.6*pi) + N(0,5^2)), type='n', cex.main=1.5)
- grid(lty=1, col=gray(.9)); lines(cs+5*w) 
+# Example 1.12 Signal in Noise
+cs = 2*cos(2*pi*(1:500)/50 + .6*pi)
+w = rnorm(500,0,1)
+par(mfrow=c(3,1), mar=c(3,2,2,1), cex.main=1.5)
+tsplot(cs, ylab="", main = expression(x[t]==2*cos(2*pi*t/50+.6*pi)))
+tsplot(cs + w, ylab="", main = expression(x[t]==2*cos(2*pi*t/50+.6*pi)+N(0,1)))
+tsplot(cs + 5*w, ylab="", main = expression(x[t]==2*cos(2*pi*t/50+.6*pi)+N(0,25)))
 dev.off()
 
 ###################
 ###################
 ###################
 ###################
-# Mar 2, 2017
+# Mar 15, 2018
 ###################
 # Autocovariance of three-point MA
 ACF = c(0,0,0,1/3,2/3,1,2/3,1/3,0,0,0)/3
