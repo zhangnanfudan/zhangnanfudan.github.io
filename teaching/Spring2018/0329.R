@@ -1,6 +1,8 @@
 library(astsa)
 
 ####################
+# March 29, 2018
+####################
 # Example 2.1 Linear trend
 summary(fit <- lm(chicken~time(chicken))) # regress price on time
 tsplot(chicken, ylab="cents per pound", col=4, lwd=2)
