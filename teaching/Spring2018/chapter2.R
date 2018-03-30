@@ -42,7 +42,7 @@ lines(fitted(fit), col=2)
 dev.off()
 
 ####################
-# Examples 2.4 and 2.5
+# Examples 2.4 and 2.5 Differencing Chicken Prices
 fit = lm(chicken~time(chicken), na.action=NULL) # regress chicken on time
 par(mfrow=c(2,1))
 tsplot(resid(fit), main="detrended")
@@ -55,23 +55,26 @@ acf1(diff(chicken), 48, main="first difference")
 dev.off()
 
 ####################
-# Example 2.6
-par(mfrow=c(2,1))
+# Example 2.6 Differencing Global Temperature
+par(mfrow=c(3,1))
+tsplot(globtemp, type="o")
 tsplot(diff(globtemp), type="o")
 mean(diff(globtemp))     # drift estimate = .008
-acf1(diff(gtemp), 48, main="")
+acf(diff(gtemp), 48, main="")
+dev.off()
 
 ####################
-# Example 2.7
+# Example 2.7 Paleoclimatic Glacial Varves
 par(mfrow=c(2,1))
 tsplot(varve, main="varve", ylab="")
 tsplot(log(varve), main="log(varve)", ylab="" )
+dev.off()
 
 ####################
 # Example 2.8
 lag1.plot(soi, 12)
-dev.new()
 lag2.plot(soi, rec, 8)
+dev.off()
 
 ####################
 # Example 2.9
@@ -84,9 +87,10 @@ lines(lowess(soiL6, rec), col=4, lwd=2)
 points(soiL6, fitted(fit), pch='+', col=2)
 tsplot(resid(fit)) # not shown ...
 acf1(resid(fit))   # ... but obviously not noise
+dev.off()
 
 ####################
-# Example 2.10
+# Example 2.10 Using Regression to Discover a Signal in Noise
 set.seed(1000)  # so you can reproduce these results
 x = 2*cos(2*pi*1:500/50 + .6*pi) + rnorm(500,0,5)
 z1 = cos(2*pi*1:500/50)  
@@ -96,10 +100,10 @@ par(mfrow=c(2,1))
 tsplot(x)
 tsplot(x, col=8, ylab=expression(hat(x)))
 lines(fitted(fit), col=2)
+dev.off()
 
 ####################
-# Example 2.11
-dev.new(height=4)
+# Example 2.11 Moving Average Smoother
 wgts = c(.5, rep(1,11), .5)/12
 soif = filter(soi, sides=2, filter=wgts)
 tsplot(soi)
@@ -107,16 +111,17 @@ lines(soif, lwd=2, col=4)
 par(fig = c(.75, 1, .75, 1), new = TRUE) # the insert
 nwgts = c(rep(0,20), wgts, rep(0,20))
 plot(nwgts, type="l", ylim = c(-.02,.1), xaxt='n', yaxt='n', ann=FALSE)
+dev.off()
 
 ####################
-# Example 2.12
-dev.new(height=4)
+# Example 2.12 Kernel Smoothing
 tsplot(soi)
 lines(ksmooth(time(soi), soi, "normal", bandwidth=1), lwd=2, col=4)
 par(fig = c(.75, 1, .75, 1), new = TRUE) # the insert
 gauss = function(x) { 1/sqrt(2*pi) * exp(-(x^2)/2) }
 x = seq(from = -3, to = 3, by = 0.001)
 plot(x, gauss(x), type ="l", ylim=c(-.02,.45), xaxt='n', yaxt='n', ann=FALSE)
+dev.off()
 
 ####################
 # Example 2.13
@@ -134,3 +139,4 @@ lines(smooth.spline(time(soi), soi, spar= 1), lty=2, lwd=2, col=2)
 # Example 2.15
 plot(tempr, cmort, xlab="Temperature", ylab="Mortality")
 lines(lowess(tempr, cmort))  
+
