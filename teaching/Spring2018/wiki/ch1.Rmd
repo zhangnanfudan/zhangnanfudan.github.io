@@ -2,9 +2,9 @@
 title: "Chapter 1: Characteristics of Time Series"
 output: html_document
 ---
-
+  
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cached=TRUE)
 library(astsa)
 ```
 
@@ -93,4 +93,18 @@ tsplot(cs, ylab="", main = expression(x[t]==2*cos(2*pi*t/50+.6*pi)))
 tsplot(cs + w, ylab="", main = expression(x[t]==2*cos(2*pi*t/50+.6*pi)+N(0,1)))
 tsplot(cs + 5*w, ylab="", main = expression(x[t]==2*cos(2*pi*t/50+.6*pi)+N(0,25)))
 ```
+
+## 2. Time Series Statistical Models
+* White noise
+* Moving average
+* Autoregression
+* Random walk with drift
+* Signal in noise
+
+## 3. Basics in Statistics
+* Joint distribution function, marginal distribution function
+* Mean function, autocovariance and autocorrelation, cross-covariance and cross-correlation
+* Strictly stationary, (weak) stationary, joint stationary, properties under stationarities
+* Linear process, Gaussian process
+* Estimation: mean function, sample autocovariance and autocorrelation, ACF plot
 
