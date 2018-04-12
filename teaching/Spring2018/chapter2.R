@@ -128,15 +128,18 @@ dev.off()
 tsplot(soi)
 lines(lowess(soi, f=.05), lwd=2, col=4) # El Nino cycle
 lines(lowess(soi), lty=2, lwd=2, col=2) # trend (with default span)
+dev.off()
 
 ####################
 # Example 2.14
 tsplot(soi)
 lines(smooth.spline(time(soi), soi, spar=.5), lwd=2, col=4)
 lines(smooth.spline(time(soi), soi, spar= 1), lty=2, lwd=2, col=2)
+dev.off()
 
 ####################
 # Example 2.15
 plot(tempr, cmort, xlab="Temperature", ylab="Mortality")
 lines(lowess(tempr, cmort))  
+dev.off()
 

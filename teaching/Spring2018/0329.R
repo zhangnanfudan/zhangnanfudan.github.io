@@ -3,6 +3,7 @@ library(astsa)
 ####################
 # March 29, 2018
 ####################
+####################
 # Example 2.1 Linear trend
 summary(fit <- lm(chicken~time(chicken))) # regress price on time
 tsplot(chicken, ylab="cents per pound", col=4, lwd=2)
@@ -44,7 +45,7 @@ lines(fitted(fit), col=2)
 dev.off()
 
 ####################
-# Examples 2.4 and 2.5
+# Examples 2.4 and 2.5 Differencing Chicken Prices
 fit = lm(chicken~time(chicken), na.action=NULL) # regress chicken on time
 par(mfrow=c(2,1))
 tsplot(resid(fit), main="detrended")
@@ -57,14 +58,49 @@ acf1(diff(chicken), 48, main="first difference")
 dev.off()
 
 ####################
-# Example 2.6
-par(mfrow=c(2,1))
+# Example 2.6 Differencing Global Temperature
+par(mfrow=c(3,1))
+tsplot(globtemp, type="o")
 tsplot(diff(globtemp), type="o")
 mean(diff(globtemp))     # drift estimate = .008
-acf1(diff(gtemp), 48, main="")
+acf(diff(gtemp), 48, main="")
+dev.off()
 
 ####################
-# Example 2.7
+# Example 2.7 Paleoclimatic Glacial Varves
 par(mfrow=c(2,1))
 tsplot(varve, main="varve", ylab="")
 tsplot(log(varve), main="log(varve)", ylab="" )
+dev.off()
+
+####################
+# Example 2.8
+lag1.plot(soi, 12)
+lag2.plot(soi, rec, 8)
+dev.off()
+
+####################
+# Example 2.9
+dummy = ifelse(soi<0, 0, 1)
+fish  = ts.intersect(rec, soiL6=lag(soi,-6), dL6=lag(dummy,-6), dframe=TRUE)
+summary(fit <- lm(rec~ soiL6*dL6, data=fish, na.action=NULL))
+attach(fish)
+plot(soiL6, rec)
+lines(lowess(soiL6, rec), col=4, lwd=2)
+points(soiL6, fitted(fit), pch='+', col=2)
+tsplot(resid(fit)) # not shown ...
+acf1(resid(fit))   # ... but obviously not noise
+dev.off()
+
+####################
+# Example 2.10 Using Regression to Discover a Signal in Noise
+set.seed(1000)  # so you can reproduce these results
+x = 2*cos(2*pi*1:500/50 + .6*pi) + rnorm(500,0,5)
+z1 = cos(2*pi*1:500/50)  
+z2 = sin(2*pi*1:500/50)
+summary(fit <- lm(x~0+z1+z2))  # zero to exclude the intercept
+par(mfrow=c(2,1))
+tsplot(x)
+tsplot(x, col=8, ylab=expression(hat(x)))
+lines(fitted(fit), col=2)
+dev.off()

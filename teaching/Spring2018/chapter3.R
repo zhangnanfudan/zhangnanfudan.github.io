@@ -1,21 +1,32 @@
 library(astsa)
 
+####################
 # Example 3.2
 par(mfrow=c(2,1))                         
 # in the expressions below, ~ is a space and == is equal
 tsplot(arima.sim(list(order=c(1,0,0), ar=.9), n=100), ylab="x", main=(expression(AR(1)~~~phi==+.9))) 
 tsplot(arima.sim(list(order=c(1,0,0), ar=-.9), n=100), ylab="x", main=(expression(AR(1)~~~phi==-.9))) 
+dev.off()
+
+####################
 # Example 3.5
 par(mfrow=c(2,1))                                   
 tsplot(arima.sim(list(order=c(0,0,1), ma=.9), n=100), ylab="x", main=(expression(MA(1)~~~theta==+.9)))    
 tsplot(arima.sim(list(order=c(0,0,1), ma=-.9), n=100), ylab="x", main=(expression(MA(1)~~~theta==-.9)))    
+dev.off()
+
+####################
 # Example 3.7
 set.seed(8675309)         # Jenny, I got your number
 x = rnorm(150, mean=5)    # Jenerate iid N(5,1)s
 arima(x, order=c(1,0,1))  # Jenstimation
+
+####################
 # Example 3.8
 ARMAtoMA(ar = .9,  ma = .5,  10)   # first 10 psi-weights
 ARMAtoMA(ar = -.5, ma = -.9, 10)   # first 10 pi-weights
+
+####################
 # Example 3.11
 z = c(1,-1.5,.75)    # coefficients of the polynomial
 (a = polyroot(z)[1]) # = 1+0.57735i,  print one root which is 1 + i 1/sqrt(3)
@@ -31,9 +42,13 @@ abline(v=seq(0,144,by=12), lty=2)
 ACF = ARMAacf(ar=c(1.5,-.75), ma=0, 50)
 plot(ACF, type="h", xlab="lag")
 abline(h=0)
+
+####################
 # Example 3.12
 ARMAtoMA(ar=.9, ma=.5, 50)       #  for a list        
 plot(ARMAtoMA(ar=.9, ma=.5, 50)) #  for a graph     
+
+####################
 # Example 3.16
 ar2.acf = ARMAacf(ar=c(1.5,-.75), ma=0, 24)[-1]
 ar2.pacf = ARMAacf(ar=c(1.5,-.75), ma=0, 24, pacf=TRUE)
@@ -42,10 +57,14 @@ plot(ar2.acf, type="h", xlab="lag")
 abline(h=0)
 plot(ar2.pacf, type="h", xlab="lag")
 abline(h=0)
+
+####################
 # Example 3.18
 acf2(rec, 48)     # will produce values and a graphic 
 (regr = ar.ols(rec, order=2, demean=F, intercept=TRUE))  # regression
 regr$asy.se.coef  # standard errors                             
+
+####################
 # Example 3.25
 regr = ar.ols(rec, order=2, demean=FALSE, intercept=TRUE)
 fore = predict(regr, n.ahead=24)
@@ -53,6 +72,8 @@ ts.plot(rec, fore$pred, col=1:2, xlim=c(1980,1990), ylab="Recruitment")
 lines(fore$pred, type="p", col=2)
 lines(fore$pred+fore$se, lty="dashed", col=4)
 lines(fore$pred-fore$se, lty="dashed", col=4)
+
+####################
 # Example 3.26
 set.seed(90210)
 x = arima.sim(list(order = c(1,0,1), ar =.9, ma=.5), n = 100)
@@ -66,6 +87,8 @@ U = nx[1:10] + pxrse; L = nx[1:10] - pxrse
 xx = c(-9:0, 0:-9); yy = c(L, rev(U))
 polygon(xx, yy, border = 8, col = gray(0.6, alpha = 0.2))
 lines(-9:0, nx[1:10], col=2, type='o')
+
+####################
 # Example 3.28
 rec.yw = ar.yw(rec, order=2)
 rec.yw$x.mean  # = 62.26278 (mean estimate)
@@ -81,10 +104,14 @@ ts.plot(rec, rec.pr$pred, xlim=c(1980,1990), ylim=c(minx,maxx))
 lines(rec.pr$pred, col="red", type="o")
 lines(U, col="blue", lty="dashed")
 lines(L, col="blue", lty="dashed")
+
+####################
 # Example 3.29
 set.seed(2)
 ma1 = arima.sim(list(order = c(0,0,1), ma = 0.9), n = 50)
 acf(ma1, plot=FALSE)[1]  # = .507 (lag 1 sample ACF)
+
+####################
 # Example 3.31
 # Note: I'm not convinced this is really the MLE...
 #  ... but eventually 'sarima()' will be used
@@ -93,6 +120,8 @@ rec.mle$x.mean
 rec.mle$ar
 sqrt(diag(rec.mle$asy.var.coef))
 rec.mle$var.pred
+
+####################
 # Example 3.33
 x = diff(log(varve))
 # Evaluate Sc on a Grid
@@ -123,6 +152,8 @@ for (p in 1:niter){
 round(cbind(iteration=0:(niter-1), thetahat=para[1:niter] , Sc , Sz ), 3)
 abline(v = para[1:12], lty=2)
 points(para[1:12], Sc[1:12], pch=16)
+
+####################
 # Example 3.36
 # generate data
 set.seed(101010)   
@@ -171,11 +202,15 @@ lines(u, dnorm(u, mean=.96, sd=.03), lty=2, lwd=2)
 legend(.65, 14, legend=c('true distribution', 'bootstrap distribution',
                          'normal approximation'), bty='n', lty=c(1,0,2), lwd=c(2,0,2),
        col=1, pch=c(NA,22,NA), pt.bg=c(NA,culer,NA), pt.cex=2.5)
+
+####################
 # Example 3.38
 set.seed(666)    
 x = arima.sim(list(order = c(0,1,1), ma = -0.8), n = 100)
 (x.ima = HoltWinters(x, beta=FALSE, gamma=FALSE))  # α is 1-λ here
 plot(x.ima)
+
+####################
 # Example 3.39, 3.40, and 3.43
 plot(gnp)
 acf2(gnp, 50)           
@@ -185,10 +220,14 @@ acf2(gnpgr, 24)
 sarima(gnpgr, 1, 0, 0)      # AR(1)
 sarima(gnpgr, 0, 0, 2)      # MA(2) 
 ARMAtoMA(ar=.35, ma=0, 10)  # prints psi-weights
+
+####################
 # Example 3.41
 sarima(log(varve), 0, 1, 1, no.constant=TRUE)   # ARIMA(0,1,1)
 dev.new()
 sarima(log(varve), 1, 1, 1, no.constant=TRUE)   # ARIMA(1,1,1)
+
+####################
 # Example 3.44
 trend  = time(cmort) 
 temp   = tempr - mean(tempr)
@@ -196,6 +235,8 @@ temp2  = temp^2
 summary(fit <- lm(cmort~trend + temp + temp2 + part, na.action=NULL))
 acf2(resid(fit), 52) # implies AR2
 sarima(cmort, 2,0,0, xreg=cbind(trend,temp,temp2,part) )
+
+####################
 # Example 3.45
 # Note: this could benefit from a seasonal model fit, but it hasn't
 #  been talked about yet - you could come back to this after the next section
@@ -210,6 +251,8 @@ sarima(rec,2,0,0, xreg = cbind(soiL6, dL6, intract))
 # not in text, but this works better 
 # sarima(rec,2,0,0,0,1,1,12, xreg = cbind(soiL6, dL6, intract))
 
+
+####################
 # Example 3.46
 set.seed(666)
 phi  = c(rep(0,11),.9)
@@ -230,6 +273,8 @@ plot(ACF,type="h", xlab="LAG", ylim=c(-.1,1))
 abline(h=0)
 plot(PACF, type="h", xlab="LAG", ylim=c(-.1,1)) 
 abline(h=0)
+
+####################
 # Example 3.47
 phi  = c(rep(0,11),.8)
 ACF  = ARMAacf(ar=phi, ma=-.5, 50)[-1] # [-1] removes 0 lag
@@ -237,6 +282,8 @@ PACF = ARMAacf(ar=phi, ma=-.5, 50, pacf=TRUE)
 par(mfrow=c(1,2))
 plot(ACF, type="h", xlab="LAG", ylim=c(-.4,.8)); abline(h=0)
 plot(PACF, type="h", xlab="LAG", ylim=c(-.4,.8)); abline(h=0)
+
+####################
 # Example 3.49
 x     = AirPassengers
 lx    = log(x) 
