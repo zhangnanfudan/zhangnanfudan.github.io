@@ -23,6 +23,7 @@ arima(x, order=c(1,0,1))  # Jenstimation
 
 ####################
 # Example 3.8
+# Xt = .9X_t−1 + .5Wt−1 + Wt
 ARMAtoMA(ar = .9,  ma = .5,  10)   # first 10 psi-weights
 ARMAtoMA(ar = -.5, ma = -.9, 10)   # first 10 pi-weights
 
