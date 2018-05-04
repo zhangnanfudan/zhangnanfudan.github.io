@@ -48,10 +48,10 @@ dev.off()
 
 ####################
 # Example 3.18 Preliminary analysis of Rec
+tsplot(rec, ylab="", main="Recruitment") 
 acf2(rec, 48)     # will produce values and a graphic 
 (regr = ar.ols(rec, order=2, demean=F, intercept=TRUE))  # regression
 regr$asy.se.coef  # standard errors                             
 dev.off()
-
 
 
