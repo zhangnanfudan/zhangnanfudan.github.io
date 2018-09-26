@@ -1,10 +1,3 @@
-#######################################################
-###       Statistical Computing with R              ###        
-###       Maria L. Rizzo                            ###
-###                                                 ###
-###       R code for Chapter 3                      ###
-#######################################################
-
 ### Example 3.1
 
 #toss some coins
