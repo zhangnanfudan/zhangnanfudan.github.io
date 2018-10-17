@@ -39,18 +39,3 @@ p <- apply(x, MARGIN = 1,
 Phi <- pnorm(x)
 print(round(rbind(x, p, Phi), 3))
 
-
-### Example 5.5 (Error bounds for MC integration)
-x <- 2
-m <- 10000
-z <- rnorm(m)
-g <- (z < x)  #the indicator function
-v <- mean((g - mean(g))^2) / m
-cdf <- mean(g)
-c(cdf, v)
-c(cdf - 1.96 * sqrt(v), cdf + 1.96 * sqrt(v))
-my.cdf = pnorm(2)
-my.v = my.cdf*(1-my.cdf)/m
-c(my.cdf, my.v)
-c(my.cdf - 1.96 * sqrt(my.v), my.cdf + 1.96 * sqrt(my.v))
-
