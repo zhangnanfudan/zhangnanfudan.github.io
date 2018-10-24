@@ -1,7 +1,5 @@
 
 ### Example 5.10 (Choice of the importance function)
-#code for plot is at the end of the file
-
 m <- 10000
 theta.hat <- se <- numeric(5)
 g <- function(x) {
@@ -38,6 +36,42 @@ theta.hat[5] <- mean(fg)
 se[5] <- sd(fg)
 
 round(rbind(theta.hat, se),digits=4)
+
+
+
+### Plot importance functions in Figures 5.1(a) and 5.1.(b)
+#par(ask = TRUE) #uncomment to pause between graphs
+
+x <- seq(0, 1, .01)
+w <- 2
+f1 <- exp(-x)
+f2 <- (1 / pi) / (1 + x^2)
+f3 <- exp(-x) / (1 - exp(-1))
+f4 <- 4 / ((1 + x^2) * pi)
+g <- exp(-x) / (1 + x^2)
+
+#for color change lty to col
+
+#figure (a)
+plot(x, g, type = "l", main = "envelop", ylab = "",
+     ylim = c(0,2), lwd = w, col=1)
+lines(x, g/g, col = 2, lwd = w)
+lines(x, f1, col = 3, lwd = w)
+lines(x, f2, col = 4, lwd = w)
+lines(x, f3, col = 5, lwd = w)
+lines(x, f4, col = 6, lwd = w)
+legend("topright", legend = c("g", 0:4),
+       col = 1:6, lwd = w, inset = 0.02)
+
+#figure (b)
+plot(x, g, type = "l", main = 'ratio of g over envelop', 
+     ylab = "", ylim = c(0,3.2), lwd = w, col = 2)
+lines(x, g/f1, col = 3, lwd = w)
+lines(x, g/f2, col = 4, lwd = w)
+lines(x, g/f3, col = 5, lwd = w)
+lines(x, g/f4, col = 6, lwd = w)
+legend("topright", legend = c(0:4),
+       col = 2:6, lwd = w, inset = 0.02)
 
 
 ### Example 5.11 (Example 5.10, cont.)
@@ -86,39 +120,3 @@ for (i in 1:N) {
 apply(estimates, 2, mean)
 apply(estimates, 2, var)
 
-
-
-### Plot importance functions in Figures 5.1(a) and 5.1.(b)
-
-#par(ask = TRUE) #uncomment to pause between graphs
-
-x <- seq(0, 1, .01)
-w <- 2
-f1 <- exp(-x)
-f2 <- (1 / pi) / (1 + x^2)
-f3 <- exp(-x) / (1 - exp(-1))
-f4 <- 4 / ((1 + x^2) * pi)
-g <- exp(-x) / (1 + x^2)
-
-#for color change lty to col
-
-#figure (a)
-plot(x, g, type = "l", main = "", ylab = "",
-     ylim = c(0,2), lwd = w, col=1)
-lines(x, g/g, col = 2, lwd = w)
-lines(x, f1, col = 3, lwd = w)
-lines(x, f2, col = 4, lwd = w)
-lines(x, f3, col = 5, lwd = w)
-lines(x, f4, col = 6, lwd = w)
-legend("topright", legend = c("g", 0:4),
-       col = 1:6, lwd = w, inset = 0.02)
-
-#figure (b)
-plot(x, g, type = "l", main = "", ylab = "",
-     ylim = c(0,3.2), lwd = w, col = 2)
-lines(x, g/f1, col = 3, lwd = w)
-lines(x, g/f2, col = 4, lwd = w)
-lines(x, g/f3, col = 5, lwd = w)
-lines(x, g/f4, col = 6, lwd = w)
-legend("topright", legend = c(0:4),
-       col = 2:6, lwd = w, inset = 0.02)
