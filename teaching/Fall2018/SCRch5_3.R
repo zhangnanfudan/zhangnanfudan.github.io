@@ -35,7 +35,7 @@ fg <- g(x) / (4 / ((1 + x^2) * pi))
 theta.hat[5] <- mean(fg)
 se[5] <- sd(fg)
 
-round(rbind(theta.hat, se),digits=4)
+round(rbind(theta.hat, se/sqrt(m)),digits=4)
 
 
 
