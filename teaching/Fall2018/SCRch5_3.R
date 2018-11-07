@@ -120,3 +120,4 @@ for (i in 1:N) {
 apply(estimates, 2, mean)
 apply(estimates, 2, var)
 
+(var(estimates[,1])-var(estimates[,2]))/var(estimates[,1])
