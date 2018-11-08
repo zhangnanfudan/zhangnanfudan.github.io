@@ -47,7 +47,7 @@ sqrt(sum((tmean - mean(tmean))^2)) / m    #se
 
 # Different levels of trimming
 n <- 20
-m <- 1000 # try 10000
+m <- 10000 # try 10000
 mse=numeric(10)
 
 for(k in 0:9)
