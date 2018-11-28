@@ -124,7 +124,7 @@ for (i in 1:M) {
     #simulate under alternative mu1
     x <- rnorm(n, mean = mu1, sd = sigma)
     ttest <- t.test(x,
-                    alternative = "two.sided", mu = mu0)
+                    alternative = "greater", mu = mu0)
     # try "two.sided" and "less"
     ttest$p.value  } )
   power[i] <- mean(pvalues <= .05)
@@ -185,7 +185,7 @@ lines(epsilon, pwr-se, lty = 3, lwd=2, col=2)
 library(energy)
 alpha <- .1
 n <- 30
-m <- 500        #try small m for a trial run
+m <- 100        #try small m for a trial run
 test1 <- test2 <- test3 <- numeric(m)
 
 #critical value for the skewness test
