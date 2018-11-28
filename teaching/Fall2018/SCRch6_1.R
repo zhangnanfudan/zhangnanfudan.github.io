@@ -104,37 +104,3 @@ lines(mse[,1], type='o',col=2,lwd=2)
 legend("topright", legend = c("p=1","p=0.95","p=0.9"), 
        lwd=2, col = 2:4)
 
-### Example 6.4 (Confidence interval for variance)
-
-n <- 20
-alpha <- .05
-x <- rnorm(n, mean=0, sd=2)
-UCL <- (n-1) * var(x) / qchisq(alpha, df=n-1)
-UCL
-
-### Example 6.5 (MC estimate of confidence level)
-
-#set.seed(123)
-n <- 20
-alpha <- .05
-UCL <- replicate(1000, expr = {
-  x <- rnorm(n, mean = 0, sd = 2)
-  (n-1) * var(x) / qchisq(alpha, df = n-1)
-} )
-#count the number of intervals that contain sigma^2=4
-sum(UCL > 4)
-#or compute the mean to get the confidence level
-mean(UCL > 4)
-
-
-### Example 6.6 (Empirical confidence level)
-
-n <- 20
-alpha <- .05
-UCL <- replicate(1000, expr = {
-  x <- rchisq(n, df = 2)
-  (n-1) * var(x) / qchisq(alpha, df = n-1)
-} )
-sum(UCL > 4)
-mean(UCL > 4)
-
