@@ -1,6 +1,7 @@
 ### Example 7.1
 set.seed(8)
 x=rpois(10,2)
+x
 hist(x)
 
 

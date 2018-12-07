@@ -124,7 +124,7 @@ for (i in 1:M) {
     #simulate under alternative mu1
     x <- rnorm(n, mean = mu1, sd = sigma)
     ttest <- t.test(x,
-                    alternative = "greater", mu = mu0)
+                    alternative = "two.sided", mu = mu0)
     # try "two.sided" and "less"
     ttest$p.value  } )
   power[i] <- mean(pvalues <= .05)
