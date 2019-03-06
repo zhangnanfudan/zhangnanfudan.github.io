@@ -17,8 +17,9 @@ dev.off()
 ####################
 # Example 1.25 Sample ACF and Scatterplot
 r = round(acf(soi, 6, plot=FALSE)$acf[-1], 3) # first 6 sample acf values
-par(mfrow=c(1,2))
+par(mfrow=c(1,3))
 plot(lag(soi,-1), soi); legend('topleft', legend=r[1])
+plot(lag(soi,-4), soi); legend('topleft', legend=r[4])
 plot(lag(soi,-6), soi); legend('topleft', legend=r[6])
 dev.off()
 
@@ -51,20 +52,20 @@ ccf2(soi, rec, 48, main="SOI vs Recruitment")
 dev.off()
 
 ####################
-# Example 1.29 Prewhitening and CCF
-# set.seed(1492)
-# num=120; t=1:num
-# X = ts(2*cos(2*pi*t/12) + rnorm(num), freq=12)
-# Y = ts(2*cos(2*pi*(t+5)/12) + rnorm(num), freq=12)
-# Yw = resid( lm(Y~ cos(2*pi*t/12) + sin(2*pi*t/12), na.action=NULL) )
-# par(mfrow=c(3,2), mgp=c(1.6,.6,0), mar=c(3,3,1,1) )
-# tsplot(X)
-# tsplot(Y)
-# acf1(X, 48, ylab='ACF(X)')
-# acf1(Y, 48, ylab='ACF(Y)')
-# ccf2(X, Y, 24)
-# ccf2(X, Yw, 24, ylim=c(-.6,.6))
-# dev.off()
+# Example 1.29 Prewhitening and CCF, mimic SOI v.s. Rec
+set.seed(1492)
+num=120; t=1:num
+X = ts(2*cos(2*pi*t/12) + rnorm(num), freq=12)
+Y = ts(2*cos(2*pi*(t+5)/12) + rnorm(num), freq=12)
+Yw = resid( lm(Y~ cos(2*pi*t/12) + sin(2*pi*t/12), na.action=NULL) )
+par(mfrow=c(3,2), mgp=c(1.6,.6,0), mar=c(3,3,1,1) )
+tsplot(X)
+tsplot(Y)
+acf1(X, 48, ylab='ACF(X)')
+acf1(Y, 48, ylab='ACF(Y)')
+ccf2(X, Y, 24)
+ccf2(X, Yw, 24, ylim=c(-.6,.6))
+dev.off()
 
 ####################
 # Example 1.30 Soil surface temperature
