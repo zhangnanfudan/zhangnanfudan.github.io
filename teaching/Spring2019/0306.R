@@ -33,8 +33,8 @@ y2 = 5 + filter(x2, sides=1, filter=c(1,-.7))[-1]
 # tsplot(y1, type='s')  # plot series
 # tsplot(y2, type='s')   
 c(mean(y1), mean(y2))  # the sample means
-acf(y1, lag.max=4, plot=FALSE) 
-acf(y2, lag.max=4, plot=FALSE) 
+acf(y1, lag.max=4) 
+acf(y2, lag.max=4) 
 dev.off()
 
 ####################
