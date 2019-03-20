@@ -1,6 +1,10 @@
 library(astsa)
 
 ####################
+# March 20, 2019
+####################
+
+####################
 # Example 2.11 Moving Average Smoother
 wgts = c(.5, rep(1,11), .5)/12
 soif = filter(soi, sides=2, filter=wgts)
