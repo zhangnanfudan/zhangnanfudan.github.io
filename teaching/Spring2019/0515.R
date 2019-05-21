@@ -53,11 +53,3 @@ for (p in 1:niter){
 round(cbind(iteration=0:(niter-1), thetahat=para[1:niter] , Sc , Sz ), 3)
 abline(v = para[1:12], lty=2)
 points(para[1:12], Sc[1:12], pch=16)
-
-
-####################
-# Example 3.38 IMA(1,1) and EWMA
-set.seed(666)    
-x = arima.sim(list(order = c(0,1,1), ma = -0.8), n = 100)
-(x.ima = HoltWinters(x, beta=FALSE, gamma=FALSE))  # α is 1-λ here
-plot(x.ima)
