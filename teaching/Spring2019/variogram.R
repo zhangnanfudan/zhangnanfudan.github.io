@@ -30,7 +30,7 @@ vgram_lat2=vgram(data2[,1:2], data2[,3], lon.lat=TRUE, N=10)
 vgram_lat3=vgram(data3[,1:2], data3[,3], lon.lat=TRUE, N=10)
 vgram_lat4=vgram(data4[,1:2], data4[,3], lon.lat=TRUE, N=10)
 
-pdf('lat.pdf',width=14,height=14)
+# pdf('lat.pdf',width=14,height=14)
 par(mfrow=c(2,2))
 bplot.xy(vgram_lat1$d, sqrt(2*vgram_lat1$vgram),ylab="sqrt(VG)", N=10, outlier=TRUE, main="latitude -49.72")
 lines(vgram_lat1$centers, sqrt(2*vgram_lat1$stats["mean",]), col=4, lwd=3)
