@@ -64,6 +64,15 @@ points(fit$x)
 
 ## Using another stationary covariance. 
 # smoothness is the shape parameter for the Matern
-fit <- Krig(ChicagoO3$x, ChicagoO3$y, 
-            Covariance="Matern", theta=10, smoothness=1.0)  
-summary( fit)
+fit.matern <- Krig(ChicagoO3$x, ChicagoO3$y, 
+                   Covariance="Matern", theta=10, smoothness=1.0)  
+summary( fit.matern)
+
+set.panel(2,2)
+plot(fit.matern)
+
+set.panel(1,2)
+surface(fit, type="C") # look at the surface 
+surface(fit.matern, type="C") # look at the surface 
+
+
