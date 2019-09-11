@@ -121,6 +121,23 @@ mean(w)
 w = iris$Sepal.Width
 w = iris[,2] # more general, can select multiple elements
 
+library(ggplot2)
+ggplot(data = iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_point()
+
+ggplot(iris, aes(Sepal.Length, Sepal.Width,
+                 color = Species, shape = Species)) + geom_point(size = 2)
+
+### Example 1.13 (ggplot: parallel boxplots and violin plots)
+
+ggplot(iris, aes(Species, Sepal.Length)) + geom_boxplot()
+ggplot(iris, aes(Species, Sepal.Length)) + geom_violin()
+
+ggplot(iris, aes(Species, Sepal.Length)) +
+  geom_boxplot() + coord_flip()
+ggplot(iris, aes(Species, Sepal.Length)) +
+  geom_violin() + coord_flip()
+
 attach(iris)
 summary(Petal.Length[51:100]) #versicolor petal length
 detach(iris) # Good practice!
