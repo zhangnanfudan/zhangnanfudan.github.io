@@ -108,7 +108,7 @@ n=1000
 z1=rnorm(n); z2=rnorm(n)
 u=runif(n)
 
-qqplot(z1^2+z2^2, -2*log(u), cex=0.25, xlab="R2", ylab="-2logU")
+qqplot(z1^2+z2^2, -2*log(u), cex=0.25, xlab="R2", ylab="-2logU", main="Box-Muller verification")
 abline(0, 1)
 
 
@@ -152,8 +152,8 @@ k <- as.integer(u > 0.5)  #vector of 0's and 1's
 x <- k * x1 + (1-k) * x2  #the mixture
 
 par(mfcol=c(1,2))         #two graphs per page
-hist(s, prob=TRUE, breaks = 30)
-hist(x, prob=TRUE, breaks = 30)
+hist(x, prob=TRUE, breaks = 30, main = "Histogram of the mixture")
+hist(s, prob=TRUE, breaks = 30, main = "Histogram of the sum")
 par(mfcol=c(1,1))         #restore display
 
 
@@ -164,8 +164,7 @@ par(mfcol=c(1,1))         #restore display
 mu <- c(0, 0)
 Sigma <- matrix(c(1, .9, .9, 1), nrow = 2, ncol = 2)
 
-rmvn.eigen <-
-function(n, mu, Sigma) {
+rmvn.eigen <- function(n, mu, Sigma) {
 # generate n random vectors from MVN(mu, Sigma)
 # dimension is inferred from mu and Sigma
 d <- length(mu)
@@ -188,8 +187,7 @@ print(cor(X))
 
 ### Example 3.17 (SVD method)
 
-rmvn.svd <-
-function(n, mu, Sigma) {
+rmvn.svd <- function(n, mu, Sigma) {
 # generate n random vectors from MVN(mu, Sigma)
 # dimension is inferred from mu and Sigma
 d <- length(mu)
@@ -213,3 +211,37 @@ Z <- matrix(rnorm(n*d), nrow=n, ncol=d)
 X <- Z %*% Q + matrix(mu, n, d, byrow=TRUE)
 X
 }
+
+
+
+### Example 3.19 (Comparing performance of MVN generators)
+
+library(MASS)
+library(mvtnorm)
+n <- 100          #sample size
+d <- 30           #dimension
+N <- 2000         #iterations
+mu <- numeric(d)
+
+set.seed(100)
+st.eigen = system.time(for (i in 1:N)
+    rmvn.eigen(n, mu, cov(matrix(rnorm(n*d), n, d))))
+set.seed(100)
+st.svd = system.time(for (i in 1:N)
+    rmvn.svd(n, mu, cov(matrix(rnorm(n*d), n, d))))
+set.seed(100)
+st.chol = system.time(for (i in 1:N)
+    rmvn.Choleski(n, mu, cov(matrix(rnorm(n*d), n, d))))
+set.seed(100)
+st.mvrnorm = system.time(for (i in 1:N)
+    mvrnorm(n, mu, cov(matrix(rnorm(n*d), n, d))))
+set.seed(100)
+st.rmvnorm = system.time(for (i in 1:N)
+    rmvnorm(n, mu, cov(matrix(rnorm(n*d), n, d))))
+
+timing = list(eigen = st.eigen, svd = st.svd, chol = st.chol, 
+              mvrnorm = st.mvrnorm, rmvnorm = st.rmvnorm)
+timing
+
+detach(package:MASS)
+detach(package:mvtnorm)
