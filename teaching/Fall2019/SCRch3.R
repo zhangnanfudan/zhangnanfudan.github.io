@@ -148,7 +148,7 @@ x1 <- rnorm(n, 0, 1)
 x2 <- rnorm(n, 10, 1)
 s <- x1 + x2              #the convolution
 u <- runif(n)
-k <- as.integer(u > 0.5)  #vector of 0's and 1's
+k <- as.integer(u < 0.25)  #vector of 0's and 1's
 x <- k * x1 + (1-k) * x2  #the mixture
 
 par(mfcol=c(1,2))         #two graphs per page
