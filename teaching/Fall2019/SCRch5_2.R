@@ -68,7 +68,7 @@ cor(A, B)
 a <- -cov(A,B) / var(B)    #est of c*
 a
 
-m <- 100000
+m <- 10000
 u <- runif(m)
 T1 <- g(u)
 T2 <- T1 + a * (f(u) - exp(-.5)*pi/4)
@@ -95,6 +95,6 @@ theta.hat <- sum(L$coeff * c(1, mu))  # pred. value at mu
 predict(L, newdata = data.frame(f=mu)) # alternative
 
 theta.hat
-summary(L)$sigma
+summary(L)$sigma^2
 summary(L)$r.squared
 
