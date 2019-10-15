@@ -75,6 +75,7 @@ legend("topright", legend = c(0:4),
 
 
 ### Example 5.11 (Example 5.10, cont.)
+set.seed(123)
 
 M <- 20   #number of replicates
 T2 <- numeric(4)
@@ -94,8 +95,9 @@ for (i in 1:10) {
 
 estimates
 apply(estimates, 2, mean)
-apply(estimates, 2, var)
-
+my.var = apply(estimates, 2, var)
+my.var
+(my.var[1]-my.var[2])/my.var[1]
 
 ### Example 5.12 (Examples 5.10-5.11, cont.)
 
