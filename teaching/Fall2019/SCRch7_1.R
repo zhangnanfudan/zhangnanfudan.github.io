@@ -144,8 +144,7 @@ print(boot.ci(boot.obj, type=c("basic","norm","perc")))
 
 ### Example 7.12 (Bootstrap t confidence interval)
 
-boot.t.ci <-
-  function(x, B = 500, R = 100, level = .95, statistic){
+boot.t.ci <- function(x, B = 500, R = 100, level = .95, statistic){
     #compute the bootstrap t CI
     x <- as.matrix(x);  n <- nrow(x)
     stat <- numeric(B); se <- numeric(B)
@@ -185,6 +184,75 @@ data(patch, package = "bootstrap")
 
 dat <- cbind(patch$y, patch$z)
 stat <- function(dat) {
-  mean(dat[, 1]) / mean(dat[, 2]) }
+  mean(dat[, 1]) / mean(dat[, 2]) 
+  }
 ci <- boot.t.ci(dat, statistic = stat, B=2000, R=200)
 print(ci)
+
+
+### Example 7.14 (BCa bootstrap confidence interval)
+boot.BCa <- function(x, th0, th, stat, conf = .95) {
+    # bootstrap with BCa bootstrap confidence interval
+    # th0 is the observed statistic
+    # th is the vector of bootstrap replicates
+    # stat is the function to compute the statistic
+    
+    x <- as.matrix(x)
+    n <- nrow(x) #observations in rows
+    N <- 1:n
+    alpha <- (1 + c(-conf, conf))/2
+    zalpha <- qnorm(alpha)
+    
+    # the bias correction factor
+    z0 <- qnorm(sum(th < th0) / length(th))
+    
+    # the acceleration factor (jackknife est.)
+    th.jack <- numeric(n)
+    for (i in 1:n) {
+      J <- N[1:(n-1)]
+      th.jack[i] <- stat(x[-i, ], J)
+    }
+    L <- mean(th.jack) - th.jack
+    a <- sum(L^3)/(6 * sum(L^2)^1.5)
+    
+    # BCa conf. limits
+    adj.alpha <- pnorm(z0 + (z0+zalpha)/(1-a*(z0+zalpha)))
+    limits <- quantile(th, adj.alpha, type=6)
+    return(list("est"=th0, "BCa"=limits))
+  }
+
+
+### Example 7.15 (BCa bootstrap confidence interval)
+
+#boot package and patch data were loaded in Example 7.10
+#library(boot)       #for boot and boot.ci
+#data(patch, package = "bootstrap")
+
+n <- nrow(patch)
+B <- 2000
+y <- patch$y
+z <- patch$z
+x <- cbind(y, z)
+theta.b <- numeric(B)
+theta.hat <- mean(y) / mean(z)
+
+#bootstrap
+for (b in 1:B) {
+  i <- sample(1:n, size = n, replace = TRUE)
+  y <- patch$y[i]
+  z <- patch$z[i]
+  theta.b[b] <- mean(y) / mean(z)
+}
+#compute the BCa interval
+stat <- function(dat, index) {
+  mean(dat[index, 1]) / mean(dat[index, 2])  }
+
+boot.BCa(x, th0 = theta.hat, th = theta.b, stat = stat)
+
+
+
+### Example 7.16 (BCa bootstrap confidence interval using boot.ci)
+
+#using x from Example 7.15
+boot.obj <- boot(x, statistic = stat, R=2000)
+boot.ci(boot.obj, type=c("perc", "bca"))

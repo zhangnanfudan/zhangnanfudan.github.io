@@ -28,27 +28,26 @@ print(se)
 
 ### Example 7.8 (Failure of jackknife)
 #for the specific example given
-set.seed(123)
+set.seed(1112)
 #change the seed to see other examples
-
 n <- 10
 x <- sample(1:100, size = n)
 
 #jackknife estimate of se
-M <- numeric(n)
+M.jack <- numeric(n)
 for (i in 1:n) {        #leave one out
   y <- x[-i]
-  M[i] <- median(y)
+  M.jack[i] <- median(y)
 }
 
-Mbar <- mean(M)
-print(sqrt((n-1)/n * sum((M - Mbar)^2)))
+Mbar <- mean(M.jack)
+print(sqrt((n-1)/n * sum((M.jack - Mbar)^2)))
 
 #bootstrap estimate of se
-Mb <- replicate(1000, expr = {
+M.boot <- replicate(1000, expr = {
   y <- sample(x, size = n, replace = TRUE)
   median(y) })
-print(sd(Mb)) 
-print(x)
-print(M)
-print(Mb)
+print(sd(M.boot)) 
+
+M.jack
+head(M.boot)
