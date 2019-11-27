@@ -66,23 +66,23 @@ par(mfrow = c(2, 2))    #layout for graphs
 L1 <- lm(magnetic ~ chemical)
 plot(chemical, magnetic, main="Linear", pch=16)
 yhat1 <- L1$coef[1] + L1$coef[2] * a
-lines(a, yhat1, lwd=2)
+lines(a, yhat1, lwd=2, col=2)
 
 L2 <- lm(magnetic ~ chemical + I(chemical^2))
 plot(chemical, magnetic, main="Quadratic", pch=16)
 yhat2 <- L2$coef[1] + L2$coef[2] * a + L2$coef[3] * a^2
-lines(a, yhat2, lwd=2)
+lines(a, yhat2, lwd=2, col=2)
 
 L3 <- lm(log(magnetic) ~ chemical)
 plot(chemical, magnetic, main="Exponential", pch=16)
 logyhat3 <- L3$coef[1] + L3$coef[2] * a
 yhat3 <- exp(logyhat3)
-lines(a, yhat3, lwd=2)
+lines(a, yhat3, lwd=2, col=2)
 
 L4 <- lm(log(magnetic) ~ log(chemical))
 plot(log(chemical), log(magnetic), main="Log-Log", pch=16)
 logyhat4 <- L4$coef[1] + L4$coef[2] * log(a)
-lines(log(a), logyhat4, lwd=2)
+lines(log(a), logyhat4, lwd=2, col=2)
 
 dev.off()
 ### Example 7.18 (Model selection: Cross validation)
