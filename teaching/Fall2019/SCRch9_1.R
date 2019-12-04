@@ -1,3 +1,31 @@
+# Toy example for Bayesian
+par(mfrow=c(1,2))
+n<-20
+x<-0:n
+del<-.25
+plot( range(x-del), c(0,.4),xlab="observed y",
+      ylab="probability",type="n")
+
+points( x-del,dbinom(x,n,.05),type="h",col=1,lwd=3)
+points( x,dbinom(x,n,.10),type="h",col=2,lwd=3)
+points( x+del,dbinom(x,n,.20),type="h",col=3,lwd=3)
+legend(10,.35,legend=c('p=0.05', 'p=0.10', 'p=0.20'), lwd=c(3,3,3), col=1:3 ,bty="n") 
+# prior
+a<-10 ; b<-20
+# observed
+y<-0
+
+theta<-seq(0,1,length=500)
+plot(theta, dbeta(theta,a+y,b+n-y),
+     type="l",
+     xlab="prob p",
+     ylab="", lwd=2
+)
+lines(theta, dbeta(theta,a,b),col="gray",lwd=2)
+legend(.5,6,legend=c("prior", "posterior"), bty="n", lwd=c(2,2),col=c("gray","black"))
+dev.off()
+
+
 ### Example 9.1 (Metropolis-Hastings sampler)
 
 f <- function(x, sigma) {
@@ -27,9 +55,13 @@ for (i in 2:m) {
 
 print(k)
 
+plot(x[1:100], type='l')
+plot(x[1:500], type='l')
+
 index <- 5000:5500
 y1 <- x[index]
 plot(index, y1, type="l", main="", ylab="x")
+
 
 ### Example 9.2 (Example 9.1, cont.)
 
@@ -83,22 +115,27 @@ print(c(rw1$k, rw2$k, rw3$k, rw4$k)/N)
 # paths
 ## individual
 par(mfrow=c(2,2))
-plot(rw1$x, type='l')
-plot(rw2$x, type='l')
-plot(rw3$x, type='l')
-plot(rw4$x, type='l')
+plot(rw1$x, type='l', main='sig=0.05')
+plot(rw2$x, type='l', main='sig=0.50')
+plot(rw3$x, type='l', main='sig=2')
+plot(rw4$x, type='l', main='sig=16')
 
 ## comparative
 y.lim=range(c(rw1$x, rw2$x, rw3$x, rw4$x))
-plot(rw1$x, type='l', ylim=y.lim)
-plot(rw2$x, type='l', ylim=y.lim)
-plot(rw3$x, type='l', ylim=y.lim)
-plot(rw4$x, type='l', ylim=y.lim)
+refline <- qt(c(.025, .975), df=n)
+plot(rw1$x, type='l', ylim=y.lim, main='sig=0.05')
+abline(h=refline, col=2)
+plot(rw2$x, type='l', ylim=y.lim, main='sig=0.50')
+abline(h=refline, col=2)
+plot(rw3$x, type='l', ylim=y.lim, main='sig=2')
+abline(h=refline, col=2)
+plot(rw4$x, type='l', ylim=y.lim, main='sig=16')
+abline(h=refline, col=2)
 
 dev.off()
 
-# ### Code for Figure 9.3
-# 
+# # ### Code for Figure 9.3
+# # 
 #     par(mfrow=c(2,2))  #display 4 graphs together
 #     refline <- qt(c(.025, .975), df=n)
 #     rw <- cbind(rw1$x, rw2$x, rw3$x,  rw4$x)
