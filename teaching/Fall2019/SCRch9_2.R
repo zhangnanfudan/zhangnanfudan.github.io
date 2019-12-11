@@ -1,5 +1,5 @@
 ### Example 9.7 (Gibbs sampler: Bivariate distribution)
-
+set.seed(123)
 #initialize constants and parameters
 N <- 5000               #length of chain
 burn <- 1000            #burn-in length
@@ -41,9 +41,9 @@ x_MASS = mvrnorm(n=dim(x)[1],mu=c(mu1, mu2), Sigma=S)
 
 par(mfrow=c(1,2))
 plot(x, cex=.5, xlab=bquote(X[1]),
-     ylab=bquote(X[2]), ylim=range(x[,2]), main='MCMC')
+     ylab=bquote(X[2]), ylim=range(x[,2]), xlim=range(x[,1]), main='MCMC')
 plot(x_MASS, cex=.5, xlab=bquote(X[1]),
-     ylab=bquote(X[2]), ylim=range(x[,2]), main='MASS')
+     ylab=bquote(X[2]), ylim=range(x[,2]), xlim=range(x[,1]), main='MASS')
 
 
 
